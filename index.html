@@ -222,9 +222,8 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
         <h2 id="h-caps"><span class="num">4</span>Captions<span class="hint">Tap to tick. Each video gets every ticked caption.</span></h2>
         <div class="captools">
           <label class="lbl" for="pickn">Pick</label>
-          <input type="number" id="pickn" class="pickn" min="2" max="24" step="2" value="6">
+          <input type="number" id="pickn" class="pickn" min="1" max="6" step="1" value="6">
           <button class="btn primary" id="pick">Half proven, half new</button>
-          <button class="btn" id="all">All</button>
           <button class="btn" id="none">None</button>
           <span class="grow"></span>
           <div class="seg" id="filter">
@@ -616,7 +615,7 @@ function capsFor(m) {
       ...b.fresh.map(raw => ({ id: 'c' + uid++, kind: 'new', raw, src: 'New idea', edited: null, on: false })),
       ...(S.own[m] || []).map(raw => ({ id: 'c' + uid++, kind: 'own', raw, src: 'Added by you', edited: null, on: true })),
     ];
-    pickMix(S.caps[m], +$('pickn').value || 6);
+    pickMix(S.caps[m], +$('pickn').value || MAX_PER_VIDEO);
   }
   return S.caps[m];
 }
@@ -630,12 +629,20 @@ const textOf = (c) => c.edited ?? fillText(c.raw, S.mission);
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function pickMix(list, n) {
   list.forEach(c => { if (c.kind !== 'own') c.on = false; });
+  trimToMax(list);
+  n = Math.min(n, maxCaps() - list.filter(c => c.on).length);
+  if (n <= 0) return;
   const half = Math.max(1, Math.floor(n / 2));
   shuffle(list.filter(c => c.kind === 'proven')).slice(0, half).forEach(c => c.on = true);
   shuffle(list.filter(c => c.kind === 'new')).slice(0, n - half).forEach(c => c.on = true);
 }
 const selected = () => capsFor(S.mission).filter(c => c.on && textOf(c).trim());
 const activeStyles = () => ['tiktok', 'snap'].filter(s => S.styles[s]);
+const MAX_PER_VIDEO = 6;
+const maxCaps = () => Math.floor(MAX_PER_VIDEO / Math.max(1, activeStyles().length));
+const tickedCount = () => capsFor(S.mission).filter(c => c.on).length;
+const capFull = () => `Up to ${MAX_PER_VIDEO} versions per video` + (activeStyles().length > 1 ? ' (3 captions × 2 styles)' : '') + '. Untick one first.';
+function trimToMax(list) { let on = list.filter(c => c.on); while (on.length > maxCaps()) on.pop().on = false; }
 
 function renderMissions() {
   $('missions').innerHTML = '';
@@ -666,7 +673,8 @@ function renderCaps() {
   const list = capsFor(S.mission), ol = $('caps');
   const sel = list.filter(c => c.on);
   const np = sel.filter(c => c.kind === 'proven').length, nn = sel.filter(c => c.kind === 'new').length, no = sel.filter(c => c.kind === 'own').length;
-  $('mix').textContent = `${sel.length} ticked · ${np} proven · ${nn} new` + (no ? ` · ${no} yours` : '');
+  $('mix').textContent = `${sel.length} of ${maxCaps()} ticked · ${np} proven · ${nn} new` + (no ? ` · ${no} yours` : '');
+  $('pickn').max = maxCaps(); if (+$('pickn').value > maxCaps()) $('pickn').value = maxCaps();
   ol.innerHTML = '';
   for (const c of list) {
     if (S.filter !== 'all' && c.kind !== S.filter) continue;
@@ -675,7 +683,10 @@ function renderCaps() {
     const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = c.on; cb.id = 'cb-' + c.id;
     cb.setAttribute('aria-label', 'Use this caption');
     cb.onclick = (e) => e.stopPropagation();
-    cb.onchange = () => { c.on = cb.checked; S.pvCap = c.id; renderCaps(); drawPreview(); };
+    cb.onchange = () => {
+      if (cb.checked && tickedCount() >= maxCaps()) { cb.checked = false; toast(capFull()); return; }
+      c.on = cb.checked; S.pvCap = c.id; renderCaps(); drawPreview();
+    };
     const txt = document.createElement('div'); txt.className = 'txt';
     const ta = document.createElement('textarea'); ta.rows = 1; ta.value = textOf(c); ta.id = 'ta-' + c.id; ta.readOnly = true;
     ta.setAttribute('aria-label', 'Caption text');
@@ -707,6 +718,7 @@ function renderCaps() {
     li.onpointerdown = () => { wasEditing = !ta.readOnly; };
     li.onclick = (e) => {
       if (wasEditing || !ta.readOnly || e.target.closest('button')) { wasEditing = false; return; }
+      if (!c.on && tickedCount() >= maxCaps()) { toast(capFull()); return; }
       c.on = !c.on; S.pvCap = c.id; renderCaps(); drawPreview();
     };
     ol.append(li);
@@ -896,6 +908,7 @@ function updateMake() {
   else if (!vids) why = 'None of the videos can be read in this browser.';
   else if (!caps) why = 'Tick at least one caption.';
   else if (!st) why = 'Pick a caption style.';
+  else if (caps * st > MAX_PER_VIDEO) why = `Up to ${MAX_PER_VIDEO} versions per video. Untick some captions.`;
   else if (S.encoderError) why = S.encoderError;
   let warn = '';
   const perJob = n ? S.videos.filter(v => v.status === 'ok').reduce((a, v) => a + (v.bitrate + 2e5) * v.dur / 8, 0) * caps * st / n : 0;
@@ -1193,6 +1206,9 @@ const drop = $('drop');
 ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, () => drop.classList.remove('over')));
 drop.addEventListener('drop', (e) => { e.preventDefault(); addFiles([...e.dataTransfer.files]); });
 for (const b of $('styles').children) b.onclick = () => {
+  if (!S.styles[b.dataset.style] && tickedCount() * (activeStyles().length + 1) > MAX_PER_VIDEO) {
+    toast(`Up to ${MAX_PER_VIDEO} versions per video, so both styles allow 3 captions. Untick ${tickedCount() - 3} first.`, 4000); return;
+  }
   S.styles[b.dataset.style] = !S.styles[b.dataset.style]; store.set('styles', S.styles);
   if (S.styles[b.dataset.style]) S.pvStyle = b.dataset.style;
   renderStyles(); drawPreview(); updateMake();
@@ -1201,14 +1217,14 @@ for (const b of $('pvstyle').children) b.onclick = () => { if (S.styles[b.datase
 for (const b of $('posseg').children) b.onclick = () => setPos(+b.dataset.pos);
 $('pos').oninput = (e) => setPos(e.target.value / 100);
 for (const b of $('filter').children) b.onclick = () => { S.filter = b.dataset.f; for (const x of $('filter').children) x.setAttribute('aria-pressed', String(x === b)); renderCaps(); };
-$('pick').onclick = () => { pickMix(capsFor(S.mission), Math.max(2, +$('pickn').value || 6)); S.pvCap = null; renderCaps(); drawPreview(); };
-$('all').onclick = () => { capsFor(S.mission).forEach(c => c.on = true); renderCaps(); drawPreview(); };
+$('pick').onclick = () => { pickMix(capsFor(S.mission), Math.max(1, +$('pickn').value || maxCaps())); S.pvCap = null; renderCaps(); drawPreview(); };
 $('none').onclick = () => { capsFor(S.mission).forEach(c => c.on = false); renderCaps(); drawPreview(); };
 $('addform').onsubmit = (e) => {
   e.preventDefault();
   const t = $('addtext').value.trim(); if (!t) return;
   (S.own[S.mission] ||= []).push(t); store.set('own', S.own);
-  const c = { id: 'c' + uid++, kind: 'own', raw: t, src: 'Added by you', edited: null, on: true };
+  const c = { id: 'c' + uid++, kind: 'own', raw: t, src: 'Added by you', edited: null, on: tickedCount() < maxCaps() };
+  if (!c.on) toast('Added, but not ticked: ' + capFull());
   capsFor(S.mission).push(c); S.pvCap = c.id; $('addtext').value = '';
   renderCaps(); drawPreview();
 };
