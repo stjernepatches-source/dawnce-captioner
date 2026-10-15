@@ -178,6 +178,17 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .opt.sty { padding: 26px 14px 16px; font-size: 16px; }
 .opt.sty[aria-pressed="true"]::after { top: 8px; right: 8px; width: 20px; height: 20px; font-size: 12px; }
 .scr .lbl { margin: -8px 0 -6px; }
+.wheelrow { display: flex; align-items: center; gap: 14px; }
+.wheelrow .lbl { margin: 0; text-align: left; }
+.wheelbox { position: relative; width: 92px; height: 144px; border: 1.5px solid var(--line); border-radius: 18px; background: var(--surface); overflow: hidden; }
+.wheel { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; overscroll-behavior: contain; -webkit-mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent); mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent); }
+.wheel::-webkit-scrollbar { display: none; }
+.wheel:focus-visible { outline: none; }
+.wheelbox:focus-within { border-color: var(--accent); }
+.wheel > div { height: 48px; display: grid; place-items: center; font: 700 28px/1 var(--mono); color: var(--muted); scroll-snap-align: center; transition: color .1s, font-size .1s; }
+.wheel > div.pad { scroll-snap-align: none; }
+.wheel > div.on { color: var(--accent); font-size: 36px; }
+.wheelbox .band { position: absolute; left: 8px; right: 8px; top: 48px; height: 48px; border-block: 2px solid var(--accent); border-radius: 4px; pointer-events: none; opacity: .5; }
 .opt .d { font: 400 14px/1.35 var(--body); color: var(--muted); max-width: 28ch; }
 .opt.proven .em + b { color: var(--proven); } .opt.new .em + b { color: var(--new); }
 .bigin { font: 700 44px/1 var(--mono); width: 4.5ch; text-align: center; padding: 12px 8px; border: 1.5px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -253,6 +264,13 @@ body.wizmode .brand { font-size: 22px; }
       <div class="opts two-up">
         <button class="opt sty" data-wstyle="tiktok" aria-pressed="true"><b>TikTok text</b><span class="d">White, black outline</span></button>
         <button class="opt sty" data-wstyle="snap" aria-pressed="true"><b>Snapchat bar</b><span class="d">In the dark box</span></button>
+      </div>
+      <div class="wheelrow">
+        <div class="wheelbox">
+          <div class="wheel" id="wwheel" tabindex="0" role="spinbutton" aria-label="Videos per clip" aria-valuemin="1" aria-valuemax="6" aria-valuenow="6"></div>
+          <span class="band" aria-hidden="true"></span>
+        </div>
+        <span class="lbl" id="wwheellbl">videos<br>per clip</span>
       </div>
       <p class="sub" id="wkindsub"></p>
       <button class="go" id="wmake">Make 6 videos</button>
@@ -1400,30 +1418,57 @@ function wizMissions() {
     $('wmissions').append(b);
   }
 }
-const WZ = { kinds: { proven: true, new: true }, styles: { tiktok: true, snap: true } };
-const PER_CLIP = 6;
+const WZ = { kinds: { proven: true, new: true }, styles: { tiktok: true, snap: true }, n: 6 };
+const PER_CLIP = 6;   // the most per clip; the wheel starts here and only goes down
+const halves = (n) => { const a = Math.floor(n / 2), b = n - a; return Math.random() < 0.5 ? [a, b] : [b, a]; };
+const ROW = 48;
+function wheelBuild() {
+  const w = $('wwheel'); w.innerHTML = '<div class="pad"></div>';
+  for (let v = PER_CLIP; v >= 1; v--) { const d = document.createElement('div'); d.textContent = v; d.dataset.v = v; d.onclick = () => wheelSet(v, true); w.append(d); }
+  w.insertAdjacentHTML('beforeend', '<div class="pad"></div>');
+  let t = 0;
+  w.onscroll = () => { wheelRead(); clearTimeout(t); t = setTimeout(wheelRead, 90); };
+  w.onkeydown = (e) => {
+    const d = { ArrowDown: -1, ArrowUp: 1 }[e.key]; if (!d) return;
+    e.preventDefault(); wheelSet(Math.min(PER_CLIP, Math.max(1, WZ.n + d)), true);
+  };
+}
+function wheelRead() {
+  const w = $('wwheel'), v = Math.min(PER_CLIP, Math.max(1, PER_CLIP - Math.round(w.scrollTop / ROW)));
+  for (const d of w.children) d.classList.toggle('on', +d.dataset.v === v);
+  if (v !== WZ.n) { WZ.n = v; w.setAttribute('aria-valuenow', v); wizSummary(); }
+}
+function wheelSet(v, smooth) {
+  $('wwheel').scrollTo({ top: (PER_CLIP - v) * ROW, behavior: smooth ? 'smooth' : 'auto' });
+  WZ.n = v; $('wwheel').setAttribute('aria-valuenow', v); wizSummary();
+  for (const d of $('wwheel').children) d.classList.toggle('on', +d.dataset.v === v);
+}
 function wizSummary() {
   const n = S.videos.length, k = Object.keys(WZ.kinds).filter(x => WZ.kinds[x]), st = Object.keys(WZ.styles).filter(x => WZ.styles[x]);
   for (const b of $('wiz').querySelectorAll('[data-kind]')) b.setAttribute('aria-pressed', String(!!WZ.kinds[b.dataset.kind]));
   for (const b of $('wiz').querySelectorAll('[data-wstyle]')) b.setAttribute('aria-pressed', String(!!WZ.styles[b.dataset.wstyle]));
-  const total = n * PER_CLIP;
+  const per = WZ.n, total = n * per;
+  $('wwheellbl').innerHTML = (per === 1 ? 'video' : 'videos') + (n > 1 ? '<br>per clip' : '');
   $('wmake').disabled = !k.length || !st.length;
-  $('wmake').textContent = `Make ${total} videos`;
+  $('wmake').textContent = `Make ${total} video${total === 1 ? '' : 's'}`;
   if (!k.length) return void ($('wkindsub').textContent = 'Tick Proven, New or both.');
   if (!st.length) return void ($('wkindsub').textContent = 'Tick TikTok text, Snapchat bar or both.');
-  const kTxt = k.length === 2 ? '3 proven + 3 new captions' : `6 ${k[0]} captions`;
-  const sTxt = st.length === 2 ? '3 as TikTok text, 3 as a Snapchat bar' : st[0] === 'snap' ? 'all as a Snapchat bar' : 'all as TikTok text';
+  const h = per / 2, odd = per % 2 === 1;
+  const kTxt = k.length === 1 ? `${per} ${k[0]} caption${per === 1 ? '' : 's'}`
+    : per === 1 ? '1 caption, proven or new' : odd ? `${per} captions, a mix of proven and new` : `${h} proven + ${h} new captions`;
+  const sTxt = st.length === 1 ? (per === 1 ? '' : 'all ') + (st[0] === 'snap' ? 'as a Snapchat bar' : 'as TikTok text')
+    : per === 1 ? 'as TikTok text or a Snapchat bar' : odd ? 'mixing TikTok text and Snapchat bars' : `${h} as TikTok text, ${h} as a Snapchat bar`;
   $('wkindsub').textContent = `${n > 1 ? 'Each clip gets ' : ''}${kTxt}, picked for you, ${sTxt}.`;
 }
 function wizKind() {
   $('wkindback').dataset.back = MISSIONS[S.mission].param ? 'param' : 'mission';
-  wizSummary();
   wizGo('kind');
+  wheelSet(PER_CLIP);   // always starts on 6 (needs the screen visible to scroll)
 }
 function wizPlan() {
   const list = capsFor(S.mission), kinds = ['proven', 'new'].filter(k => WZ.kinds[k]);
-  const per = PER_CLIP / kinds.length, caps = [];
-  for (const k of kinds) caps.push(...shuffle(list.filter(c => c.kind === k)).slice(0, per));
+  const counts = kinds.length === 2 ? halves(WZ.n) : [WZ.n], caps = [];
+  kinds.forEach((k, i) => caps.push(...shuffle(list.filter(c => c.kind === k)).slice(0, counts[i])));
   const styles = shuffle(['tiktok', 'snap'].filter(x => WZ.styles[x]));
   return caps.map((c, i) => ({ c, st: styles[i % styles.length] }));
 }
@@ -1450,6 +1495,7 @@ if (WIZ) {
   $('wiz').hidden = false;
   $('wresults').append($('results'));
   wizMissions();
+  wheelBuild();
   $('wfile').onchange = (e) => {
     const files = [...e.target.files]; e.target.value = '';
     S.videos = []; $('waddsub').classList.remove('err');
