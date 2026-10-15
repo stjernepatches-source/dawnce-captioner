@@ -147,7 +147,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .results .sum { font: 600 13px/1 var(--mono); color: var(--muted); }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
 .out { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 10px; align-items: start; }
-.out canvas { width: 54px; height: 96px; border-radius: 6px; background: #000; }
+.out img { width: 54px; height: 96px; border-radius: 6px; background: #000; object-fit: cover; }
 .out .fn { font: 600 12px/1.3 var(--mono); overflow-wrap: anywhere; }
 .out .ct { font-size: 13px; line-height: 1.35; margin-block: 4px; overflow-wrap: anywhere; }
 .out .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -536,6 +536,62 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem('dawnce-captioner:' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem('dawnce-captioner:' + k, JSON.stringify(v)); } catch {} },
 };
+
+const DISK = { ok: false, dir: null, worker: null, seq: 0, wait: new Map(), q: Promise.resolve(), free: Infinity };
+const DISK_DIR = 'captioner', MANIFEST = 'results.json';
+const DISK_WORKER = `onmessage = async (e) => {
+  const { id, dir, key, buf } = e.data;
+  try {
+    const d = await (await navigator.storage.getDirectory()).getDirectoryHandle(dir, { create: true });
+    const h = await (await d.getFileHandle(key, { create: true })).createSyncAccessHandle();
+    try {
+      await h.truncate(0);
+      const n = await h.write(buf, { at: 0 });
+      if (n !== buf.byteLength) throw new Error('only ' + n + ' of ' + buf.byteLength + ' bytes written');
+      await h.flush();
+    } finally { await h.close(); }
+    postMessage({ id, ok: true });
+  } catch (err) { postMessage({ id, ok: false, err: String((err && err.message) || err) }); }
+};`;
+function diskPut(key, data) {
+  const buf = typeof data === 'string' ? new TextEncoder().encode(data) : data;
+  return DISK.q = DISK.q.catch(() => {}).then(() => new Promise((res, rej) => {
+    const id = ++DISK.seq, t = setTimeout(() => { DISK.wait.delete(id); rej(new Error('Storage write timed out')); }, 60000);
+    DISK.wait.set(id, { res: () => { clearTimeout(t); res(); }, rej: (e) => { clearTimeout(t); rej(e); } });
+    DISK.worker.postMessage({ id, dir: DISK_DIR, key, buf });
+  }));
+}
+const diskGet = async (key) => (await DISK.dir.getFileHandle(key)).getFile();
+function diskWipe() {
+  return DISK.q = DISK.q.catch(() => {}).then(async () => {
+    const root = await navigator.storage.getDirectory();
+    await root.removeEntry(DISK_DIR, { recursive: true }).catch(() => {});
+    DISK.dir = await root.getDirectoryHandle(DISK_DIR, { create: true });
+  }).catch(() => {}).then(diskSpace);
+}
+async function diskSpace() {
+  try { const e = await navigator.storage.estimate(); if (e.quota) DISK.free = Math.max(0, e.quota - (e.usage || 0)); } catch {}
+}
+async function diskInit() {
+  try {
+    if (!navigator.storage?.getDirectory || typeof Worker === 'undefined') return false;
+    const root = await navigator.storage.getDirectory();
+    DISK.dir = await root.getDirectoryHandle(DISK_DIR, { create: true });
+    DISK.worker = new Worker(URL.createObjectURL(new Blob([DISK_WORKER], { type: 'text/javascript' })));
+    DISK.worker.onmessage = (e) => {
+      const w = DISK.wait.get(e.data.id); DISK.wait.delete(e.data.id);
+      if (w) e.data.ok ? w.res() : w.rej(new Error(e.data.err));
+    };
+    await Promise.race([diskPut('probe.bin', new Uint8Array([7])), new Promise((_, j) => setTimeout(() => j(new Error('timeout')), 5000))]);
+    if ((await diskGet('probe.bin')).size !== 1) throw new Error('probe read back wrong');
+    await DISK.dir.removeEntry('probe.bin');
+    DISK.ok = true;
+    navigator.storage.persist?.().catch(() => {});
+    await diskSpace();
+  } catch { DISK.ok = false; }
+  return DISK.ok;
+}
+const diskReady = diskInit();
 const S = {
   mission: store.get('mission', 'pushups'),
   params: Object.assign({ pushups: { n: 10 }, skincare: {}, object: { object: 'toothbrush' }, dance: { n: 10 } }, store.get('params', {})),
@@ -842,9 +898,16 @@ function updateMake() {
   else if (!st) why = 'Pick a caption style.';
   else if (S.encoderError) why = S.encoderError;
   let warn = '';
-  if (touch && !why) {
-    const held = S.results.reduce((a, r) => a + (r.size || 0), 0);
-    const perJob = S.videos.filter(v => v.status === 'ok').reduce((a, v) => a + (v.bitrate + 2e5) * v.dur / 8, 0) * caps * st / n;
+  const perJob = n ? S.videos.filter(v => v.status === 'ok').reduce((a, v) => a + (v.bitrate + 2e5) * v.dur / 8, 0) * caps * st / n : 0;
+  if (!why && DISK.ok) {
+    const room = DISK.free * 0.9;
+    if (perJob * n > room) {
+      const fit = Math.floor(room / perJob);
+      warn = fit < 1 ? 'There’s no free space left on this device for more videos. Save the finished ones, tap “Clear list”, then make more.'
+        : `Not enough free space on this device for all of these. Make up to ${fit} now, save them, clear the list, then do the rest.`;
+    }
+  } else if (touch && !why) {
+    const held = S.results.reduce((a, r) => a + (r.blob instanceof File ? 0 : r.size || 0), 0);
     if (held + perJob * n > PHONE_BUDGET) {
       const fit = Math.floor((PHONE_BUDGET - held) / perJob);
       warn = fit < 1 ? 'The phone is holding all it safely can. Save the finished videos, tap “Clear list”, then make more.'
@@ -863,6 +926,7 @@ async function make() {
   starting = true; $('go').disabled = true; $('go').textContent = 'Checking the video encoder…';
   try {
     await mbReady; if (!MB) return;
+    await restoring;
     await pickAvcProfile();
   } catch (e) {
     S.encoderError = e.message; showBanner(e.message); return;
@@ -890,10 +954,13 @@ async function make() {
         buf = await renderOne(j.v, j.text, j.st, pos, prog);
       }
       const bytes = new Uint8Array(buf);
-      addResult({ name, blob: new Blob([bytes], { type: 'video/mp4' }), crc: crc32(bytes), size: bytes.length, caption: j.text, style: j.st, kind: j.c.kind, mission, post: postFor(S.results.length, mission), v: j.v, pos });
+      const meta = { name, crc: crc32(bytes), size: bytes.length, caption: j.text, style: j.st, kind: j.c.kind, mission,
+        post: postFor(S.results.length, mission), thumb: thumbFor(j.v, j.text, j.st, pos) };
+      addResult({ ...meta, ...(await stash(bytes)) });
+      diskSpace().then(updateMake);
     } catch (e) {
       if (stopRequested) break;
-      addResult({ name, err: e?.message || String(e), caption: j.text, style: j.st, kind: j.c.kind, mission, v: j.v, pos });
+      addResult({ name, err: e?.message || String(e), caption: j.text, style: j.st, kind: j.c.kind, mission, thumb: thumbFor(j.v, j.text, j.st, pos) });
     }
     done++;
   }
@@ -939,13 +1006,40 @@ async function renderOne(v, text, style, pos, onProgress) {
 }
 function postFor(i, mission) { return `${POSTS[i % POSTS.length]} ${HASHTAGS} ${MISSIONS[mission].tag}`; }
 
-function addResult(r) {
+function thumbFor(v, text, style, pos) {
+  const c = document.createElement('canvas'); c.width = 108; c.height = 192;
+  const g = c.getContext('2d'), h = v.outW ? Math.round(108 * v.outH / v.outW) : 192;
+  if (v.poster) g.drawImage(v.poster, 0, 0, 108, h); else placeholder(g, 108, 192);
+  try { drawCaption(g, text, style, 108, h, pos); } catch {}
+  return c.toDataURL('image/jpeg', 0.75);
+}
+async function stash(bytes) {
+  if (DISK.ok) {
+    const key = `v${Date.now().toString(36)}-${uid++}.mp4`;
+    try { await diskPut(key, bytes); return { key, blob: await diskGet(key) }; }
+    catch {
+      DISK.ok = false;
+      toast('This device ran out of room for more videos. New ones are kept in memory, so save and clear before making many more.', 7000);
+    }
+  }
+  return { key: null, blob: new Blob([bytes], { type: 'video/mp4' }) };
+}
+let manifestQueued = false;
+function saveManifest() {
+  if (!DISK.ok || manifestQueued) return;
+  manifestQueued = true;
+  queueMicrotask(() => {
+    manifestQueued = false;
+    const list = S.results.filter(r => r.key).map(({ key, name, size, crc, caption, style, kind, mission, post, thumb, saved }) =>
+      ({ key, name, size, crc, caption, style, kind, mission, post, thumb, saved: !!saved }));
+    diskPut(MANIFEST, JSON.stringify(list)).catch(() => {});
+  });
+}
+function addResult(r, restored) {
   S.results.push(r);
-  const card = document.createElement('div'); card.className = 'out' + (r.err ? ' fail' : '');
-  const th = document.createElement('canvas'); th.width = 108; th.height = 192;
-  const g = th.getContext('2d');
-  if (r.v.poster) g.drawImage(r.v.poster, 0, 0, 108, Math.round(108 * r.v.outH / r.v.outW)); else placeholder(g, 108, 192);
-  try { drawCaption(g, r.caption, r.style, 108, Math.round(108 * r.v.outH / r.v.outW), r.pos); } catch {}
+  const card = document.createElement('div'); card.className = 'out' + (r.err ? ' fail' : '') + (r.saved ? ' saved' : '');
+  const th = document.createElement('img'); th.alt = ''; th.width = 54; th.height = 96;
+  if (r.thumb) th.src = r.thumb;
   const info = document.createElement('div'); info.style.minWidth = '0';
   const fn = document.createElement('div'); fn.className = 'fn'; fn.textContent = r.name;
   const ct = document.createElement('div'); ct.className = 'ct'; ct.textContent = r.err ? 'Failed: ' + r.err : r.caption;
@@ -965,26 +1059,30 @@ function addResult(r) {
   $('grid').append(card);
   $('noresults').hidden = true;
   $('clearres').disabled = false;
+  if (!restored) saveManifest();
   updateSaveAll();
 }
 let shareOK = canShareFiles;
-const SHARE_BYTES = 60e6;
+const SHARE_BYTES_DISK = 500e6, SHARE_BYTES_MEM = 60e6;
 function nextShareBatch() {
+  const maxBytes = DISK.ok ? SHARE_BYTES_DISK : SHARE_BYTES_MEM, maxN = store.get('shareMax', 0) || Infinity;
   const out = []; let sum = 0;
   for (const r of S.results) {
     if (r.err || r.saved) continue;
-    if (out.length && sum + r.size > SHARE_BYTES) break;
+    if (out.length && (sum + r.size > maxBytes || out.length >= maxN)) break;
     out.push(r); sum += r.size;
   }
   return out;
 }
-function markSaved(r) { r.saved = true; r.card?.classList.add('saved'); updateSaveAll(); }
+function markSaved(r) { r.saved = true; r.card?.classList.add('saved'); saveManifest(); updateSaveAll(); }
 async function saveOne(r) { if ((await saveFile(r.name, r.blob)) === true) markSaved(r); }
 async function shareResults(list) {
   if (!list.length) return;
   const files = list.map(r => new File([r.blob], r.name, { type: 'video/mp4' }));
-  try { await navigator.share({ files }); list.forEach(markSaved); }
+  store.set('sharing', { n: list.length });
+  try { await navigator.share({ files }); store.set('sharing', null); list.forEach(markSaved); }
   catch (e) {
+    store.set('sharing', null);
     if (e?.name === 'AbortError') return;
     shareOK = false;
     document.querySelectorAll('.out .btn.save').forEach(b => (b.textContent = 'Save'));
@@ -998,7 +1096,7 @@ function updateSaveAll() {
   const batch = shareOK ? nextShareBatch().length : 0;
   b.disabled = !ok.length || ((shareOK || touch) && !left.length);
   b.textContent = shareOK
-    ? (!ok.length ? 'Save to Photos' : !left.length ? 'All saved' : batch === left.length ? `Save ${batch} to Photos` : `Save next ${batch} to Photos`)
+    ? (!ok.length ? 'Save to Photos' : !left.length ? 'All saved' : batch === left.length ? (batch === 1 ? 'Save 1 to Photos' : `Save all ${batch} to Photos`) : `Save next ${batch} to Photos`)
     : touch ? (ok.length && !left.length ? 'All saved' : 'Save all') : 'Save all as ZIP';
   const saved = ok.length - left.length;
   $('sum').textContent = ok.length ? `${ok.length} file${ok.length === 1 ? '' : 's'} · ${fmtSize(ok.reduce((a, x) => a + x.size, 0))}` + (saved ? ` · ${saved} saved` : '') : '';
@@ -1119,13 +1217,49 @@ $('next').onclick = () => stepPreview(1);
 $('zones').onchange = drawPreview;
 $('go').onclick = make;
 $('zipall').onclick = saveAll;
-$('clearres').onclick = () => { S.results = []; $('grid').innerHTML = ''; $('noresults').hidden = false; $('clearres').disabled = true; updateSaveAll(); };
+let clearArmed = 0;
+$('clearres').onclick = async () => {
+  if (S.running) { toast('Wait until the videos are done, or tap Stop first.'); return; }
+  const unsaved = S.results.filter(r => !r.err && !r.saved).length;
+  if (unsaved && Date.now() - clearArmed > 4000) {
+    const stamp = clearArmed = Date.now();
+    $('clearres').textContent = `Delete ${unsaved} unsaved?`;
+    setTimeout(() => { if (clearArmed === stamp) $('clearres').textContent = 'Clear list'; }, 4000);
+    return;
+  }
+  clearArmed = 0; $('clearres').textContent = 'Clear list';
+  S.results = []; $('grid').innerHTML = ''; $('noresults').hidden = false; $('clearres').disabled = true;
+  if (DISK.ok) await diskWipe();
+  updateSaveAll();
+};
 if (touch) {
   $('droptitle').textContent = 'Tap to choose videos';
   $('dropnote').textContent = 'Pick one or several from your camera roll.';
   $('noresults').textContent = 'Finished videos show up here with the original sound. Save them to Photos, then post them like any other video. “Copy post text” gives a suggested description for each one.';
 }
 updateSaveAll();
+async function restoreResults() {
+  if (!(await diskReady)) return;
+  $('noresults').textContent += ' They’re kept on this device until you tap “Clear list”, even if the page reloads.';
+  let list = [];
+  try { list = JSON.parse(await (await diskGet(MANIFEST)).text()); } catch {}
+  const back = [];
+  for (const m of list) { try { const f = await diskGet(m.key); if (f.size === m.size) back.push({ ...m, blob: f }); } catch {} }
+  if (!back.length) await diskWipe();   // drops leftovers of an interrupted run
+  back.forEach(r => addResult(r, true));
+  if (back.length !== list.length) saveManifest();
+  const crashed = store.get('sharing', null);
+  if (crashed) {
+    store.set('sharing', null);
+    const per = Math.max(1, Math.floor(crashed.n / 2));
+    store.set('shareMax', per);
+    showBanner(`The page reloaded while saving ${crashed.n} videos at once, which was probably too much for this phone. Your videos are still under “Finished videos” (check Photos for any that already made it). From now on each tap saves up to ${per}.`);
+  } else if (back.length) {
+    toast(`${back.length} finished video${back.length === 1 ? ' is' : 's are'} still here from last time.`, 5000);
+  }
+  updateSaveAll();
+}
+const restoring = restoreResults();
 const pv = $('pv');
 let dragging = false;
 const posFromEvent = (e) => { const r = pv.getBoundingClientRect(); return (e.clientY - r.top) / r.height; };
@@ -1135,6 +1269,6 @@ pv.addEventListener('pointerup', () => { dragging = false; });
 
 renderAll();
 drawPreview();
-window.__captioner = { S, addFiles, make, jobs, drawCaption, STY, BANK, zipAll, buildZip, profile: () => avcProfile };
+window.__captioner = { S, addFiles, make, jobs, drawCaption, STY, BANK, zipAll, buildZip, profile: () => avcProfile, DISK, diskReady, restoring, nextShareBatch };
 </script>
 </body></html>
