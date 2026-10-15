@@ -1,0 +1,1140 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex, nofollow"><style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Dawnce Captioner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Schibsted+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;600&family=TikTok+Sans:opsz,wdth,wght@12..36,75..150,300..900&family=Arimo:wght@400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap">
+<style>
+:root {
+  --bg: #F5F3F8;
+  --surface: #FFFFFF;
+  --ink: #1A1622;
+  --muted: #6C6680;
+  --line: #E4E0EC;
+  --accent: #8B3FE0;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #F1E8FD;
+  --proven: #A34E07;
+  --proven-soft: #FCEFDD;
+  --new: #0B6F78;
+  --new-soft: #DCF2F3;
+  --warn: #B4281E;
+  --display: "Bricolage Grotesque", "Schibsted Grotesk", system-ui, sans-serif;
+  --body: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #110E17; --surface: #1A1622; --ink: #EEE9F6; --muted: #A39CB5; --line: #2E2939;
+    --accent: #B57BFF; --accent-ink: #160A24; --accent-soft: #2B1E40;
+    --proven: #F0B35A; --proven-soft: #3A2914; --new: #63CBD2; --new-soft: #12302F; --warn: #FF8A7E;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #110E17; --surface: #1A1622; --ink: #EEE9F6; --muted: #A39CB5; --line: #2E2939;
+  --accent: #B57BFF; --accent-ink: #160A24; --accent-soft: #2B1E40;
+  --proven: #F0B35A; --proven-soft: #3A2914; --new: #63CBD2; --new-soft: #12302F; --warn: #FF8A7E;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); padding-inline: 16px; padding-block: 0 48px; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.app { max-width: 1180px; margin: 0 auto; }
+
+header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; padding-block: 28px 20px; }
+.brand { font: 800 30px/1 var(--display); letter-spacing: -0.02em; margin: 0; }
+.brand span { color: var(--accent); }
+.tagline { margin: 0; color: var(--muted); max-width: 52ch; }
+
+.work { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 24px; align-items: start; }
+
+.steps { display: grid; gap: 16px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; display: grid; gap: 14px; min-width: 0; }
+.step h2 { margin: 0; display: flex; align-items: center; gap: 10px; font: 700 18px/1.2 var(--display); }
+.step h2 .num { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font: 700 13px/1 var(--mono); }
+.step h2 .hint { margin-left: auto; font: 400 13px/1.3 var(--body); color: var(--muted); }
+.lbl { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 8px 16px; font-weight: 600; transition: background .15s, border-color .15s; }
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.chip small { font-weight: 400; opacity: .8; margin-left: 4px; }
+
+.param { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.param input { width: 9em; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+.param input[type="number"] { width: 5.5em; font-family: var(--mono); }
+.param .note { color: var(--muted); font-size: 13px; }
+
+.drop { display: grid; place-items: center; text-align: center; gap: 4px; padding: 22px 16px; border: 1.5px dashed var(--line); border-radius: 12px; background: var(--bg); cursor: pointer; transition: border-color .15s, background .15s; }
+.drop:hover, .drop.over { border-color: var(--accent); background: var(--accent-soft); }
+.drop strong { font-weight: 700; }
+.drop span { color: var(--muted); font-size: 13px; }
+.drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.vids { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.vid { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+.vid[aria-current="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.vid canvas { width: 36px; height: 64px; border-radius: 4px; background: var(--line); object-fit: cover; }
+.vid .name { font: 600 13px/1.3 var(--mono); overflow-wrap: anywhere; }
+.vid .meta { font: 400 12px/1.3 var(--mono); color: var(--muted); }
+.vid .meta.err { color: var(--warn); font-family: var(--body); }
+.icon-btn { border: 0; background: none; color: var(--muted); padding: 6px 8px; border-radius: 6px; }
+.icon-btn:hover { color: var(--warn); background: var(--bg); }
+
+.posrow { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 14px; align-items: center; }
+.posrow input[type="range"] { width: 100%; accent-color: var(--accent); }
+.posrow .seg { justify-self: start; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+.seg button { border: 0; background: var(--bg); padding: 6px 12px; font-size: 13px; font-weight: 600; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+.captools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.captools .grow { flex: 1; }
+.btn { border: 1px solid var(--line); background: var(--bg); border-radius: 9px; padding: 6px 12px; font-size: 13px; font-weight: 600; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.pickn { width: 4em; padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); font-family: var(--mono); font-size: 13px; }
+.mix { font: 600 12px/1 var(--mono); color: var(--muted); }
+
+.caps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 560px; overflow: auto; padding-right: 4px; }
+.cap { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 10px 10px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.cap.previewing { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+.cap input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); }
+.cap .txt { display: grid; gap: 3px; min-width: 0; }
+.cap textarea { width: 100%; resize: none; border: 0; background: transparent; padding: 0; font: 500 15px/1.4 var(--body); color: var(--ink); field-sizing: content; min-height: 1.4em; cursor: pointer; }
+.cap textarea:read-write { cursor: text; background: var(--bg); border-radius: 6px; padding: 4px 6px; margin: -4px -6px; }
+.cap textarea:focus { outline: none; }
+.cap .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.cap .src { font-size: 12px; color: var(--muted); }
+.cap .edit { border: 0; background: none; padding: 2px 0; font-size: 12px; font-weight: 600; color: var(--accent); }
+.tag { font: 700 10px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 5px 7px; border-radius: 6px; white-space: nowrap; margin-top: 2px; }
+.tag.proven { background: var(--proven-soft); color: var(--proven); }
+.tag.new { background: var(--new-soft); color: var(--new); }
+.tag.own { background: var(--accent-soft); color: var(--accent); }
+.cap .del { grid-column: 3; justify-self: end; }
+.addrow { display: flex; gap: 8px; }
+.addrow input { flex: 1; min-width: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--bg); }
+
+.side { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); display: grid; gap: 12px; }
+.phone { background: #000; border-radius: 26px; padding: 8px; box-shadow: 0 0 0 1px var(--line); width: min(100%, 360px, calc((100vh - 300px) * 0.5625 + 16px)); min-width: min(100%, 220px); justify-self: center; }
+.phone canvas { display: block; width: 100%; height: auto; border-radius: 19px; cursor: ns-resize; }
+@media (pointer: fine) { .phone canvas { touch-action: none; } }
+.pvbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.pvbar .cnt { font: 600 12px/1 var(--mono); color: var(--muted); }
+.pvbar label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+.pvbar input { accent-color: var(--accent); }
+.zonewarn { margin: 0; font-size: 13px; color: var(--warn); }
+.make { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; gap: 10px; }
+.equation { margin: 0; font: 600 14px/1.4 var(--mono); }
+.equation b { color: var(--accent); white-space: nowrap; }
+.go { border: 0; border-radius: 11px; padding: 13px 16px; background: var(--accent); color: var(--accent-ink); font: 700 16px/1 var(--display); letter-spacing: .01em; }
+.go:disabled { opacity: .45; cursor: not-allowed; }
+.go.stop { background: var(--ink); color: var(--bg); }
+.why { margin: 0; font-size: 13px; color: var(--muted); }
+.why:empty { display: none; }
+.why.warn { color: var(--warn); }
+.bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+.status { margin: 0; font: 400 12px/1.4 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+
+.results { margin-top: 28px; display: grid; gap: 14px; }
+.results header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px; }
+.results h2 { margin: 0; font: 700 22px/1.2 var(--display); }
+.results .sum { font: 600 13px/1 var(--mono); color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.out { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 10px; align-items: start; }
+.out canvas { width: 54px; height: 96px; border-radius: 6px; background: #000; }
+.out .fn { font: 600 12px/1.3 var(--mono); overflow-wrap: anywhere; }
+.out .ct { font-size: 13px; line-height: 1.35; margin-block: 4px; overflow-wrap: anywhere; }
+.out .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.out .sz { font: 400 12px/1 var(--mono); color: var(--muted); }
+.out.saved .fn::after { content: " · saved"; color: var(--new); font-family: var(--body); }
+.out.fail { border-color: var(--warn); }
+.out.fail .ct { color: var(--warn); }
+.empty { color: var(--muted); margin: 0; }
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; max-width: calc(100vw - 32px); }
+.banner { background: var(--proven-soft); color: var(--ink); border: 1px solid var(--proven); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 900px), (pointer: coarse) and (max-height: 560px) {
+  .work { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .steps, .side { display: contents; }
+  .s-mission { order: 1; } .s-videos { order: 2; } .s-style { order: 3; }
+  .phone { order: 4; width: min(64vw, 260px, calc((100vh - 120px) * 0.5625 + 16px)); min-width: 0; }
+  .pvbar { order: 5; } .zonewarn { order: 6; } .s-caps { order: 7; }
+  .make { order: 8; position: sticky; bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); z-index: 5;
+    box-shadow: 0 8px 28px rgba(20, 10, 40, .22); padding: 12px 14px; gap: 8px; }
+  .equation { font-size: 13px; }
+  .caps { max-height: none; overflow: visible; }
+  .step { padding: 16px; }
+    .cap textarea, .addrow input, .param input, .pickn { font-size: 16px; }
+  .make .why { font-size: 12px; line-height: 1.35; }
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <h1 class="brand">Dawnce <span>Captioner</span></h1>
+    <p class="tagline">Pick a mission, add your raw videos, get one video per caption. Everything happens on your phone or computer. Nothing is uploaded.</p>
+  </header>
+  <div id="banner" class="banner" hidden></div>
+
+  <main class="work">
+    <div class="steps">
+      <section class="step s-mission" aria-labelledby="h-mission">
+        <h2 id="h-mission"><span class="num">1</span>Mission in the video</h2>
+        <div class="chips" id="missions" role="group" aria-label="Mission"></div>
+        <div class="param" id="param"></div>
+      </section>
+
+      <section class="step s-videos" aria-labelledby="h-videos">
+        <h2 id="h-videos"><span class="num">2</span>Raw videos<span class="hint">No captions on them yet</span></h2>
+        <label class="drop" id="drop">
+          <input type="file" id="file" accept="video/*,.mov,.mp4,.m4v" multiple>
+          <strong id="droptitle">Drop videos here or click to choose</strong>
+          <span id="dropnote">MP4 or MOV straight from the phone. Several at once is fine.</span>
+        </label>
+        <ul class="vids" id="vids"></ul>
+      </section>
+
+      <section class="step s-style" aria-labelledby="h-style">
+        <h2 id="h-style"><span class="num">3</span>Caption style</h2>
+        <div class="chips" id="styles" role="group" aria-label="Caption style">
+          <button class="chip" data-style="tiktok" aria-pressed="true">TikTok text <small>white, black outline</small></button>
+          <button class="chip" data-style="snap" aria-pressed="false">Snapchat bar <small>in the dark box</small></button>
+        </div>
+        <div class="posrow">
+          <span class="lbl">Position</span>
+          <div class="seg" id="posseg">
+            <button data-pos="0.22" aria-pressed="true">Top</button>
+            <button data-pos="0.45" aria-pressed="false">Middle</button>
+            <button data-pos="0.66" aria-pressed="false">Lower</button>
+          </div>
+          <span></span>
+          <input type="range" id="pos" min="10" max="74" step="0.5" value="22" aria-label="Caption height on screen">
+        </div>
+      </section>
+
+      <section class="step s-caps" aria-labelledby="h-caps">
+        <h2 id="h-caps"><span class="num">4</span>Captions<span class="hint">Tap to tick. Each video gets every ticked caption.</span></h2>
+        <div class="captools">
+          <label class="lbl" for="pickn">Pick</label>
+          <input type="number" id="pickn" class="pickn" min="2" max="24" step="2" value="6">
+          <button class="btn primary" id="pick">Half proven, half new</button>
+          <button class="btn" id="all">All</button>
+          <button class="btn" id="none">None</button>
+          <span class="grow"></span>
+          <div class="seg" id="filter">
+            <button data-f="all" aria-pressed="true">All</button>
+            <button data-f="proven" aria-pressed="false">Proven</button>
+            <button data-f="new" aria-pressed="false">New</button>
+            <button data-f="own" aria-pressed="false">Yours</button>
+          </div>
+        </div>
+        <p class="mix" id="mix"></p>
+        <ol class="caps" id="caps"></ol>
+        <form class="addrow" id="addform">
+          <input id="addtext" placeholder="Write your own caption (Enter to add)" aria-label="Your own caption">
+          <button class="btn" type="submit">Add</button>
+        </form>
+      </section>
+    </div>
+
+    <aside class="side">
+      <div class="phone"><canvas id="pv" width="720" height="1280" aria-label="Preview of the captioned video"></canvas></div>
+      <div class="pvbar">
+        <div class="seg" id="pvstyle" aria-label="Preview style">
+          <button data-style="tiktok" aria-pressed="true">TikTok</button>
+          <button data-style="snap" aria-pressed="false">Snap</button>
+        </div>
+        <span class="cnt" id="pvcnt"></span>
+        <div class="seg">
+          <button id="prev" aria-label="Previous caption">‹</button>
+          <button id="next" aria-label="Next caption">›</button>
+        </div>
+      </div>
+      <div class="pvbar">
+        <label><input type="checkbox" id="zones" checked>Show where the app buttons sit</label>
+      </div>
+      <p class="zonewarn" id="zonewarn" hidden></p>
+      <div class="make">
+        <p class="equation" id="equation"></p>
+        <button class="go" id="go" disabled>Make videos</button>
+        <p class="why" id="why"></p>
+        <div class="bar" id="bar" hidden><i></i></div>
+        <p class="status" id="status" hidden></p>
+      </div>
+    </aside>
+  </main>
+
+  <section class="results" id="results" aria-labelledby="h-results">
+    <header>
+      <h2 id="h-results">Finished videos</h2>
+      <div class="row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="sum" id="sum"></span>
+        <button class="btn primary" id="zipall" disabled>Save all as ZIP</button>
+        <button class="btn" id="clearres" disabled>Clear list</button>
+      </div>
+    </header>
+    <div class="grid" id="grid"></div>
+    <p class="empty" id="noresults">Finished MP4s show up here. Each one keeps the original sound and is named after the video, mission, style and caption number. The ZIP also has a captions.csv with a suggested post text for each file.</p>
+  </section>
+</div>
+
+<script type="module">
+const A = {
+  sq: 'Proven format',
+  walk: 'Proven format',
+  bf: 'Proven format',
+  bed: 'Proven format',
+  door: 'Proven format',
+  sleep: 'Proven format',
+  app: 'Proven format',
+  doesnt: 'Proven format',
+  mom: 'Proven format',
+  jas: 'Proven format',
+  jaspov: 'Proven format',
+  hell: 'Proven format',
+  sav: 'Proven format',
+  apps: 'Proven format',
+};
+const BANK = {
+  pushups: {
+    proven: [
+      ['POV: ur alarm won’t turn off til u do {n} push-ups😭😭😭', A.sq],
+      ['CRASHING OUT bc my alarm won’t turn off til i do {n} push-ups😭😭😭', A.walk],
+      ['Crashing out bc my alarm won’t turn off until I do {n} push-ups 😂😂💔', A.jas],
+      ['POV: your alarm won’t turn off until you do {n} push-ups 😭💔', A.sav],
+      ['POV: my alarm won’t turn off until I do {n} push-ups ❤️‍🩹', A.jaspov],
+      ['My boyfriend changed my alarm so now I have to do {n} push-ups to turn it off😭😭💔', A.bf],
+      ['My mom changed my alarm so now I have to do {n} push-ups to turn it off 😂😂💔', A.mom],
+      ['I thought sleeping over at my boyfriend’s would be cute… until his alarm made me do {n} push-ups😭😭', A.sleep],
+      ['POV: my boyfriend’s alarm DOES NOT shut off til I do {n} push-ups😭😭', A.doesnt],
+      ['Dawnce makes it so I can’t scroll in bed anymore😭😭', A.app],
+      ['another morning with my boyfriend’s alarm from HELL 💀💔', A.hell],
+      ['CRASHING OUT bc my alarm won’t let me open my apps til i do {n} push-ups😭😭😭', A.apps],
+    ],
+    fresh: [
+      'my apps are LOCKED until i do {n} push-ups. who made this alarm 😭',
+      'my alarm said drop and give me {n} 💀',
+      'i set this alarm as a joke… now i do {n} push-ups every single morning 😭',
+      'my roommate heard me grunting at sunrise. it was {n} push-ups to turn off my alarm 💀',
+      'the snooze button is gone. it’s {n} push-ups or nothing 😭',
+      'doing push-ups half asleep bc my alarm won’t shut up 😭💔',
+      'can’t even check my texts until i do {n} push-ups. this is my life now 💀',
+      'my alarm turned into a personal trainer and i never agreed to this 😭',
+      'POV: you downloaded an alarm that makes you earn your phone back 😭',
+      'my alarm counts every push-up and won’t stop til i hit {n} 💀',
+      'nobody:\nmy alarm: {n} push-ups or no instagram 😭',
+      'my arms are getting stronger and it’s my alarm’s fault 😭',
+    ],
+  },
+  skincare: {
+    proven: [
+      ['POV: ur alarm won’t turn off til u do ur skincare😭😭😭', A.sq],
+      ['CRASHING OUT bc my alarm won’t turn off til i do my skincare😭😭😭', A.walk],
+      ['Crashing out bc my alarm won’t turn off until I do my skincare 😂😂💔', A.jas],
+      ['POV: your alarm won’t turn off until you do your skincare 😭💔', A.sav],
+      ['POV: my alarm won’t turn off until I do my skincare ❤️‍🩹', A.jaspov],
+      ['My boyfriend changed my alarm so now I have to do my skincare to turn it off😭😭💔', A.bf],
+      ['My mom changed my alarm so now I have to do my skincare to turn it off 😂😂💔', A.mom],
+      ['I thought sleeping over at my boyfriend’s would be cute… until his alarm made me do my skincare😭😭', A.sleep],
+      ['POV: my boyfriend’s alarm DOES NOT shut off til I do my skincare😭😭', A.doesnt],
+      ['Dawnce makes it so I can’t scroll in bed anymore😭😭', A.app],
+      ['another morning with my boyfriend’s alarm from HELL 💀💔', A.hell],
+      ['CRASHING OUT bc my alarm won’t let me open my apps til i do my skincare😭😭😭', A.apps],
+    ],
+    fresh: [
+      'my alarm forced me into my that girl era 😭✨',
+      'my skin has never looked better and it’s bc my alarm bullies me 😭',
+      'can’t open my apps until my skincare is done. who made this alarm 😭',
+      'POV: your alarm won’t let you skip skincare anymore 💀',
+      'doing my skincare half asleep bc my alarm won’t shut up 😭💔',
+      'i used to skip skincare every morning. then i got this alarm 💀',
+      'my alarm cares about my skin more than i do 😭',
+      'glowing against my will 😭✨',
+      'the only reason i have a morning routine is this alarm 😭',
+      'morning skincare? not by choice. my alarm won’t turn off otherwise 😭',
+      'nobody:\nmy alarm: wash your face or no tiktok 💀',
+      'skincare at sunrise bc my alarm is actually evil 😭',
+    ],
+  },
+  object: {
+    proven: [
+      ['POV: ur alarm won’t turn off til u take a pic of ur {OBJECT}😭💀🥀', A.bed],
+      ['POV: your alarm won’t turn off til u take a pic of the {OBJECT}😭🥀', A.door],
+      ['CRASHING OUT bc my alarm won’t turn off til i find my {object}😭😭😭', A.walk],
+      ['Crashing out bc my alarm won’t turn off until I find my {object} 😂😂💔', A.jas],
+      ['POV: your alarm won’t turn off until you find a random object 😭💔', A.sav],
+      ['POV: my alarm won’t turn off until I take a pic of my {object} ❤️‍🩹', A.jaspov],
+      ['My boyfriend changed my alarm so now I have to find my {object} to turn it off😭😭💔', A.bf],
+      ['My mom changed my alarm so now I have to find my {object} to turn it off 😂😂💔', A.mom],
+      ['I thought sleeping over at my boyfriend’s would be cute… until his alarm made me find his {object}😭😭', A.sleep],
+      ['POV: my boyfriend’s alarm DOES NOT shut off til I find his {object}😭😭', A.doesnt],
+      ['Dawnce makes it so I can’t scroll in bed anymore😭😭', A.app],
+      ['CRASHING OUT bc my alarm won’t let me open my apps til i find my {object}😭😭😭', A.apps],
+    ],
+    fresh: [
+      'scavenger hunt at sunrise bc my alarm said so 😭',
+      'running around my apartment half asleep looking for my {object} 💀',
+      'my alarm made me play hide and seek with my own {object} 😭',
+      'can’t open my apps until i take a pic of my {object}. who made this 😭',
+      'POV: your alarm picks a random object and you have to go find it 😭💔',
+      'never been more awake than when my alarm said find your {object} 💀',
+      'the snooze button is gone. now it’s a treasure hunt 😭',
+      'i can’t find my {object} on a good day and my alarm wants a pic of it 😭',
+      'by the time i find what my alarm wants i’m wide awake 💀',
+      'my alarm turned my morning into a scavenger hunt and it actually works 😭',
+      'nobody:\nmy alarm: go find your {object} 💀',
+      'the alarm that makes you get out of bed to find stuff 😭💔',
+    ],
+  },
+  dance: {
+    proven: [
+      ['POV: ur alarm won’t turn off til u dance for {n} seconds😭😭😭', A.sq],
+      ['CRASHING OUT bc my alarm won’t turn off til i dance for {n} seconds😭😭😭', A.walk],
+      ['Crashing out bc my alarm won’t turn off until I dance for {n} secs 😂😂💔', A.jas],
+      ['POV: your alarm won’t turn off until you dance for {n} seconds 🙂‍↕️💔', A.sav],
+      ['POV: my alarm won’t turn off until I dance for {n} seconds ❤️‍🩹', A.jaspov],
+      ['My boyfriend changed my alarm so now I have to dance to turn it off😭😭💔', A.bf],
+      ['My mom changed my alarm so now I have to dance to turn it off 😂😂💔', A.mom],
+      ['I thought sleeping over at my boyfriend’s would be cute… until his alarm went off😭😭', A.sleep],
+      ['POV: my boyfriend’s alarm DOES NOT shut off til I dance😭😭', A.doesnt],
+      ['Dawnce makes it so I can’t scroll in bed anymore😭😭', A.app],
+      ['another morning with my boyfriend’s alarm from HELL 💀💔', A.hell],
+      ['CRASHING OUT bc my alarm won’t let me open my apps til i dance😭😭😭', A.apps],
+    ],
+    fresh: [
+      'my neighbors think i’m crazy bc my alarm makes me dance every morning 😭',
+      'dancing at dawn bc my alarm won’t turn off otherwise 💀',
+      'can’t open tiktok until i dance for {n} seconds. the irony 😭',
+      'my alarm made me dance before i could even open my eyes 😭💔',
+      'the dance i do every morning so my alarm lets me live 💀',
+      'nobody:\nme at sunrise: dancing for my alarm’s approval 😭',
+      'i’m not a morning person. i’m a morning DANCER now apparently 😭',
+      'my alarm literally watches me dance until i do it right 💀',
+      'first thing i do every morning? dance. not by choice 😭',
+      'half asleep dancing so i can get into my apps 😭💔',
+      'my roommate walked in on my alarm dance 💀',
+      'the only alarm that makes you dance to turn it off 😭',
+    ],
+  },
+};
+const MISSIONS = {
+  pushups: { label: 'Push-ups', param: { key: 'n', label: 'Push-ups it took', def: 10, type: 'number' }, tag: '#pushups' },
+  skincare: { label: 'Skincare', param: null, tag: '#skincare' },
+  object: { label: 'Find object', param: { key: 'object', label: 'Object you found', def: 'toothbrush', type: 'text' }, tag: '#scavengerhunt' },
+  dance: { label: 'Dance', param: { key: 'n', label: 'Seconds of dancing', def: 10, type: 'number' }, tag: '#dance' },
+};
+const POSTS = [
+  'Send this to someone who never wakes up on time😭',
+  'Send this to a heavy sleeper😭',
+  'Atleast I’m awake now 😭😭',
+  'The only thing that wakes me up in the morning',
+  'Why is it so loud!?',
+  'the only alarm i can’t snooze 😭',
+  'tag the friend who sleeps through every alarm 💀',
+];
+const HASHTAGS = '#alarmclock #nosnooze #wakeup #morning #riseandshine';
+
+const REF = 1080;
+const STY = {
+  tiktok: { family: '"TikTok Sans", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji", sans-serif', weight: 600, size: 64, hscale: 1.03, pitch: 79, maxW: 795, stroke: 5.5 },
+  snap: { family: '"Helvetica Neue", Helvetica, Arimo, Arial, "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji", sans-serif', weight: 400, size: 45, pitch: 55, maxW: 1000, alpha: 0.6, padTop: 64, padBottom: 32 },
+};
+const SAFE = { top: 220, bottom: 450, right: 100, rightFrom: 960 }; // Instagram Reels / TikTok overlay, 1080x1920 units
+const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+const EMOJI = /\p{Extended_Pictographic}|\p{Regional_Indicator}|⃣/u;
+function runsOf(line) {
+  const out = [];
+  for (const { segment } of segmenter.segment(line)) {
+    const e = EMOJI.test(segment), last = out[out.length - 1];
+    if (last && last.e === e) last.t += segment; else out.push({ t: segment, e });
+  }
+  return out;
+}
+function lineWidth(ctx, line) { let w = 0; for (const r of runsOf(line)) w += ctx.measureText(r.t).width; return w; }
+function wrapText(ctx, text, maxW) {
+  const lines = [];
+  for (const para of text.split('\n')) {
+    let cur = '';
+    for (const word of para.split(/ +/).filter(Boolean)) {
+      const t = cur ? cur + ' ' + word : word;
+      if (cur && lineWidth(ctx, t) > maxW) { lines.push(cur); cur = word; } else cur = t;
+    }
+    lines.push(cur);
+  }
+  return lines;
+}
+function drawCaption(ctx, text, style, W, H, pos) {
+  const s = STY[style], k = W / REF, hs = s.hscale || 1;
+  ctx.save();
+  ctx.font = `${s.weight} ${s.size * k}px ${s.family}`;
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+  const lines = wrapText(ctx, text.trim(), s.maxW * k / hs);
+  const widths = lines.map(l => lineWidth(ctx, l) * hs);
+  const cy = pos * H;
+  let box;
+  if (style === 'snap') {
+    const barH = (s.padTop + s.padBottom + (lines.length - 1) * s.pitch) * k;
+    const top = Math.round(cy - barH / 2);
+    ctx.fillStyle = `rgba(0,0,0,${s.alpha})`;
+    ctx.fillRect(0, top, W, Math.round(barH));
+    ctx.fillStyle = '#fff';
+    lines.forEach((l, i) => ctx.fillText(l, (W - widths[i]) / 2, top + (s.padTop + i * s.pitch) * k));
+    box = { top, bottom: top + barH, left: (W - Math.max(...widths)) / 2, right: (W + Math.max(...widths)) / 2 };
+  } else {
+    const p = s.pitch * k, b1 = cy - (lines.length - 1) * p / 2 + 0.36 * s.size * k;
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = 2 * s.stroke * k; ctx.strokeStyle = '#000';
+    const pass = (fill) => lines.forEach((l, i) => {
+      let x = (W - widths[i]) / 2 / hs; const y = b1 + i * p;
+      for (const r of runsOf(l)) {
+        if (fill) ctx.fillText(r.t, x, y); else if (!r.e) ctx.strokeText(r.t, x, y);
+        x += ctx.measureText(r.t).width;
+      }
+    });
+    ctx.scale(hs, 1);
+    pass(false);
+    ctx.fillStyle = '#fff';
+    pass(true);
+    const mw = Math.max(...widths);
+    box = { top: b1 - 0.78 * s.size * k - s.stroke * k, bottom: b1 + (lines.length - 1) * p + 0.25 * s.size * k + s.stroke * k, left: (W - mw) / 2, right: (W + mw) / 2 };
+  }
+  ctx.restore();
+  return { lines, box };
+}
+const fontLoads = new Map();
+function ensureFonts(text, style) {
+  const s = STY[style], key = style + '|' + text;
+  if (!fontLoads.has(key)) fontLoads.set(key, document.fonts.load(`${s.weight} ${s.size}px ${s.family}`, text).catch(() => {}));
+  return fontLoads.get(key);
+}
+function captionLayer(text, style, W, H, pos) {
+  const c = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(W, H) : Object.assign(document.createElement('canvas'), { width: W, height: H });
+  drawCaption(c.getContext('2d'), text, style, W, H, pos);
+  return c;
+}
+function zoneProblems(box, W, H) {
+  const k = W / REF, kh = H / 1920, out = [];
+  if (box.top < SAFE.top * kh) out.push('too close to the top bar');
+  if (box.bottom > H - SAFE.bottom * kh) out.push('inside the bottom area where the username and post text sit');
+  if (box.right > W - SAFE.right * k && box.bottom > SAFE.rightFrom * kh) out.push('under the like and share buttons');
+  return out;
+}
+
+const $ = (id) => document.getElementById(id);
+const touch = matchMedia('(pointer: coarse)').matches;
+const PHONE_LAYOUT = '(max-width: 900px), (pointer: coarse) and (max-height: 560px)'; // same as the CSS media query
+const PHONE_BUDGET = 200e6;
+const canShareFiles = touch && (() => {
+  try { return !!navigator.canShare?.({ files: [new File([new Uint8Array(1)], 't.mp4', { type: 'video/mp4' })] }); } catch { return false; }
+})();
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('dawnce-captioner:' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('dawnce-captioner:' + k, JSON.stringify(v)); } catch {} },
+};
+const S = {
+  mission: store.get('mission', 'pushups'),
+  params: Object.assign({ pushups: { n: 10 }, skincare: {}, object: { object: 'toothbrush' }, dance: { n: 10 } }, store.get('params', {})),
+  styles: store.get('styles', { tiktok: true, snap: false }),
+  pos: store.get('pos', 0.22),
+  filter: 'all',
+  own: store.get('own', { pushups: [], skincare: [], object: [], dance: [] }),
+  caps: {},          // mission -> [{id, kind, raw, src, edited, on}]
+  videos: [],        // {id, file, name, status, outW, outH, dur, poster, err}
+  cur: 0,            // video shown in the preview
+  pvCap: null,       // caption id shown in the preview
+  pvStyle: 'tiktok',
+  results: [],       // {name, blob, crc, size, caption, style, kind, mission, post, thumb, err}
+  running: false,
+};
+let uid = 0;
+function capsFor(m) {
+  if (!S.caps[m]) {
+    const b = BANK[m];
+    S.caps[m] = [
+      ...b.proven.map(([raw, src]) => ({ id: 'c' + uid++, kind: 'proven', raw, src, edited: null, on: false })),
+      ...b.fresh.map(raw => ({ id: 'c' + uid++, kind: 'new', raw, src: 'New idea', edited: null, on: false })),
+      ...(S.own[m] || []).map(raw => ({ id: 'c' + uid++, kind: 'own', raw, src: 'Added by you', edited: null, on: true })),
+    ];
+    pickMix(S.caps[m], +$('pickn').value || 6);
+  }
+  return S.caps[m];
+}
+function fillText(raw, m) {
+  const p = S.params[m] || {};
+  const n = String(p.n ?? '').trim() || '10';
+  const obj = String(p.object ?? '').trim() || 'toothbrush';
+  return raw.replace(/\{n\}/g, n).replace(/\{object\}/g, obj.toLowerCase()).replace(/\{OBJECT\}/g, obj.toUpperCase());
+}
+const textOf = (c) => c.edited ?? fillText(c.raw, S.mission);
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function pickMix(list, n) {
+  list.forEach(c => { if (c.kind !== 'own') c.on = false; });
+  const half = Math.max(1, Math.floor(n / 2));
+  shuffle(list.filter(c => c.kind === 'proven')).slice(0, half).forEach(c => c.on = true);
+  shuffle(list.filter(c => c.kind === 'new')).slice(0, n - half).forEach(c => c.on = true);
+}
+const selected = () => capsFor(S.mission).filter(c => c.on && textOf(c).trim());
+const activeStyles = () => ['tiktok', 'snap'].filter(s => S.styles[s]);
+
+function renderMissions() {
+  $('missions').innerHTML = '';
+  for (const [key, m] of Object.entries(MISSIONS)) {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.textContent = m.label; b.setAttribute('aria-pressed', String(key === S.mission));
+    b.onclick = () => { S.mission = key; store.set('mission', key); S.pvCap = null; renderAll(); };
+    $('missions').append(b);
+  }
+  const m = MISSIONS[S.mission], box = $('param');
+  box.innerHTML = '';
+  if (m.param) {
+    const id = 'param-' + S.mission;
+    const lab = document.createElement('label'); lab.className = 'lbl'; lab.htmlFor = id; lab.textContent = m.param.label;
+    const inp = document.createElement('input'); inp.id = id; inp.type = m.param.type;
+    if (m.param.type === 'number') { inp.min = 1; inp.max = 999; }
+    inp.value = S.params[S.mission][m.param.key] ?? m.param.def;
+    inp.oninput = () => { S.params[S.mission][m.param.key] = inp.value; store.set('params', S.params); renderCaps(); drawPreview(); };
+    const note = document.createElement('span'); note.className = 'note';
+    note.textContent = m.param.type === 'number' ? 'Goes into the captions. Match what the app shows in your video.' : 'Goes into the captions that name the object.';
+    box.append(lab, inp, note);
+  } else {
+    box.innerHTML = '<span class="note">Nothing to fill in for skincare.</span>';
+  }
+}
+
+function renderCaps() {
+  const list = capsFor(S.mission), ol = $('caps');
+  const sel = list.filter(c => c.on);
+  const np = sel.filter(c => c.kind === 'proven').length, nn = sel.filter(c => c.kind === 'new').length, no = sel.filter(c => c.kind === 'own').length;
+  $('mix').textContent = `${sel.length} ticked · ${np} proven · ${nn} new` + (no ? ` · ${no} yours` : '');
+  ol.innerHTML = '';
+  for (const c of list) {
+    if (S.filter !== 'all' && c.kind !== S.filter) continue;
+    const li = document.createElement('li');
+    li.className = 'cap' + (c.id === S.pvCap ? ' previewing' : '');
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = c.on; cb.id = 'cb-' + c.id;
+    cb.setAttribute('aria-label', 'Use this caption');
+    cb.onclick = (e) => e.stopPropagation();
+    cb.onchange = () => { c.on = cb.checked; S.pvCap = c.id; renderCaps(); drawPreview(); };
+    const txt = document.createElement('div'); txt.className = 'txt';
+    const ta = document.createElement('textarea'); ta.rows = 1; ta.value = textOf(c); ta.id = 'ta-' + c.id; ta.readOnly = true;
+    ta.setAttribute('aria-label', 'Caption text');
+    ta.oninput = () => { c.edited = ta.value; autoGrow?.(ta); drawPreview(); updateMake(); };
+    ta.onblur = () => { ta.readOnly = true; if (c.edited != null) src.textContent = 'Edited'; };
+    const meta = document.createElement('div'); meta.className = 'meta';
+    const src = document.createElement('span'); src.className = 'src';
+    src.textContent = c.edited != null ? 'Edited' : c.src;
+    const edit = document.createElement('button'); edit.type = 'button'; edit.className = 'edit'; edit.textContent = 'Edit';
+    edit.onclick = (e) => {
+      e.stopPropagation(); ta.readOnly = false; ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+      if (S.pvCap !== c.id) { S.pvCap = c.id; markPreviewing(); drawPreview(); }
+    };
+    meta.append(src, edit);
+    txt.append(ta, meta);
+    const tag = document.createElement('span'); tag.className = 'tag ' + c.kind;
+    tag.textContent = { proven: 'Proven', new: 'New', own: 'Yours' }[c.kind];
+    li.append(cb, txt, tag);
+    if (c.kind === 'own') {
+      const del = document.createElement('button'); del.className = 'icon-btn'; del.textContent = 'Remove'; del.type = 'button';
+      del.onclick = () => {
+        S.caps[S.mission] = list.filter(x => x !== c);
+        S.own[S.mission] = (S.own[S.mission] || []).filter(r => r !== c.raw); store.set('own', S.own);
+        renderCaps(); drawPreview(); updateMake();
+      };
+      tag.after(del); del.style.gridColumn = '2 / 4';
+    }
+    let wasEditing = false;
+    li.onpointerdown = () => { wasEditing = !ta.readOnly; };
+    li.onclick = (e) => {
+      if (wasEditing || !ta.readOnly || e.target.closest('button')) { wasEditing = false; return; }
+      c.on = !c.on; S.pvCap = c.id; renderCaps(); drawPreview();
+    };
+    ol.append(li);
+    autoGrow?.(ta);
+  }
+  updateMake();
+}
+const autoGrow = CSS.supports?.('field-sizing', 'content') ? null : (ta) => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+if (autoGrow) addEventListener('resize', () => document.querySelectorAll('.cap textarea').forEach(autoGrow));
+function markPreviewing() { for (const li of $('caps').children) li.classList.toggle('previewing', li.querySelector('input')?.id === 'cb-' + S.pvCap); }
+
+let MB = null;
+const mbReady = import('https://cdn.jsdelivr.net/npm/mediabunny@1.61.0/dist/bundles/mediabunny.min.mjs')
+  .then(m => (MB = m))
+  .catch(() => { showBanner('The video engine could not load. Check the internet connection and reload the page.'); return null; });
+function showBanner(t) { $('banner').textContent = t; $('banner').hidden = false; }
+if (typeof VideoEncoder === 'undefined' || typeof VideoDecoder === 'undefined') {
+  showBanner('This browser cannot make videos. Open this page in Chrome, Edge or Safari 17+ on a computer.');
+}
+
+let avcProfile = null;
+const NativeEncoder = globalThis.VideoEncoder;
+if (NativeEncoder) {
+  const toBaseline = (cfg) => (avcProfile === 'baseline' && /^avc[13]\.(64|4d)/i.test(cfg?.codec || ''))
+    ? { ...cfg, codec: cfg.codec.slice(0, 5) + '4200' + cfg.codec.slice(9) } : cfg;
+  const configure = NativeEncoder.prototype.configure, isSupported = NativeEncoder.isConfigSupported.bind(NativeEncoder);
+  NativeEncoder.prototype.configure = function (cfg) { return configure.call(this, toBaseline(cfg)); };
+  NativeEncoder.isConfigSupported = (cfg) => isSupported(toBaseline(cfg));
+  NativeEncoder.__test = async (codec) => {
+    try {
+      const sup = await isSupported({ codec, width: 320, height: 576, bitrate: 1e6, framerate: 30 });
+      if (!sup.supported) return false;
+      let out = 0;
+      const enc = new NativeEncoder({ output: () => out++, error: () => {} });
+      configure.call(enc, sup.config);
+      const cv = Object.assign(document.createElement('canvas'), { width: 320, height: 576 }), g = cv.getContext('2d');
+      for (let i = 0; i < 20; i++) {
+        g.fillStyle = `hsl(${i * 18},60%,50%)`; g.fillRect(0, 0, 320, 576);
+        const f = new VideoFrame(cv, { timestamp: i * 33333 }); enc.encode(f, { keyFrame: i === 0 }); f.close();
+      }
+      const ok = await Promise.race([enc.flush().then(() => out >= 20, () => false), new Promise(r => setTimeout(() => r(false), 4000))]);
+      try { enc.close(); } catch {}
+      return ok;
+    } catch { return false; }
+  };
+}
+let avcProbe = null;
+function pickAvcProfile() {
+  if (avcProfile) return Promise.resolve(avcProfile);
+  return avcProbe ||= (async () => {
+    if (!NativeEncoder) throw new Error('This browser cannot make videos.');
+    if (await NativeEncoder.__test('avc1.64002a')) avcProfile = 'high';
+    else if (await NativeEncoder.__test('avc1.42002a')) avcProfile = 'baseline';
+    else throw new Error('This browser can’t encode video. Update Safari or Chrome to the latest version and try again.');
+    return avcProfile;
+  })().catch((e) => { avcProbe = null; throw e; });
+}
+
+const even = (x) => Math.max(2, Math.round(x / 2) * 2);
+async function addFiles(files) {
+  for (const file of files) {
+    if (!/^video\//.test(file.type) && !/\.(mov|mp4|m4v)$/i.test(file.name)) continue;
+    const v = { id: 'v' + uid++, file, name: file.name, status: 'reading' };
+    S.videos.push(v);
+    renderVids();
+    probe(v).then(() => { renderVids(); if (S.videos.length === 1 || S.cur >= S.videos.length) S.cur = 0; drawPreview(); updateMake(); });
+  }
+  updateMake();
+}
+async function probe(v) {
+  try {
+    await mbReady; if (!MB) throw new Error('Video engine not loaded.');
+    const input = new MB.Input({ formats: MB.ALL_FORMATS, source: new MB.BlobSource(v.file) });
+    const vt = await input.getPrimaryVideoTrack();
+    if (!vt) throw new Error('No video track in this file.');
+    if (!(await vt.canDecode())) throw new Error('This browser can’t read this video format. Try Chrome or Safari, or record with iPhone Settings › Camera › Formats › Most Compatible.');
+    const dw = vt.displayWidth, dh = vt.displayHeight;
+    const scale = Math.min(1, 1080 / Math.min(dw, dh));
+    v.outW = even(dw * scale); v.outH = even(dh * scale);
+    v.dur = await input.computeDuration();
+    const rate = (await vt.computePacketStats(120)).averagePacketRate;
+    v.fps = [24, 25, 30, 48, 50, 60].reduce((a, b) => Math.abs(b - rate) < Math.abs(a - rate) ? b : a);
+    v.bitrate = Math.round(Math.max(4e6, (touch ? 10e6 : 14e6) * (v.outW * v.outH) / (1080 * 1920) * (v.fps > 30 ? 1.3 : 1)));
+    if (!(await MB.canEncodeVideo('avc', { width: v.outW, height: v.outH, bitrate: v.bitrate }))) throw new Error('This browser can’t encode H.264 video at this size.');
+    const pw = 720, ph = Math.round(720 * v.outH / v.outW);
+    const sink = new MB.CanvasSink(vt, { width: pw, height: ph, fit: 'fill' });
+    const wc = await sink.getCanvas(Math.min(1, v.dur * 0.25));
+    const poster = document.createElement('canvas'); poster.width = pw; poster.height = ph;
+    if (wc) poster.getContext('2d').drawImage(wc.canvas, 0, 0, pw, ph);
+    v.poster = poster;
+    v.status = 'ok';
+    input.dispose?.();
+  } catch (e) {
+    v.status = 'err'; v.err = e?.message || String(e);
+  }
+}
+function fmtDur(s) { return s == null ? '' : (s < 60 ? s.toFixed(1) + ' s' : Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0')); }
+function fmtSize(b) { return b > 1e9 ? (b / 1e9).toFixed(2) + ' GB' : (b / 1e6).toFixed(1) + ' MB'; }
+function renderVids() {
+  const ul = $('vids'); ul.innerHTML = '';
+  S.videos.forEach((v, i) => {
+    const li = document.createElement('li'); li.className = 'vid'; li.setAttribute('aria-current', String(i === S.cur));
+    const th = document.createElement('canvas'); th.width = 72; th.height = 128;
+    if (v.poster) { const g = th.getContext('2d'); const s = Math.max(72 / v.poster.width, 128 / v.poster.height); g.drawImage(v.poster, (72 - v.poster.width * s) / 2, (128 - v.poster.height * s) / 2, v.poster.width * s, v.poster.height * s); }
+    const info = document.createElement('div'); info.style.minWidth = '0';
+    const nm = document.createElement('div'); nm.className = 'name'; nm.textContent = v.name;
+    const meta = document.createElement('div'); meta.className = 'meta' + (v.status === 'err' ? ' err' : '');
+    meta.textContent = v.status === 'reading' ? 'Reading…' : v.status === 'err' ? v.err : `${v.outW}×${v.outH} · ${v.fps} fps · ${fmtDur(v.dur)} · ${fmtSize(v.file.size)}`;
+    info.append(nm, meta);
+    const rm = document.createElement('button'); rm.className = 'icon-btn'; rm.type = 'button'; rm.textContent = 'Remove';
+    rm.onclick = (e) => { e.stopPropagation(); S.videos = S.videos.filter(x => x !== v); S.cur = Math.min(S.cur, Math.max(0, S.videos.length - 1)); renderVids(); drawPreview(); updateMake(); };
+    li.append(th, info, rm);
+    li.onclick = () => { S.cur = i; renderVids(); drawPreview(); };
+    ul.append(li);
+  });
+}
+
+function placeholder(g, W, H) {
+  const gr = g.createLinearGradient(0, 0, 0, H);
+  gr.addColorStop(0, '#2B2340'); gr.addColorStop(0.55, '#6E4A8E'); gr.addColorStop(1, '#E59A6B');
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  g.fillStyle = 'rgba(255,255,255,.55)'; g.font = `500 ${W * 0.04}px ${'"Schibsted Grotesk", system-ui, sans-serif'}`; g.textAlign = 'center';
+  g.fillText('Your video goes here', W / 2, H * 0.84);
+}
+function previewCaption() {
+  const list = capsFor(S.mission);
+  let c = list.find(x => x.id === S.pvCap);
+  if (!c) { c = list.find(x => x.on) || list[0]; S.pvCap = c?.id; }
+  return c;
+}
+function drawPreview() {
+  const cv = $('pv'), v = S.videos[S.cur];
+  const W = 720, H = v?.outW ? Math.round(720 * v.outH / v.outW) : 1280;
+  if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+  const g = cv.getContext('2d');
+  g.clearRect(0, 0, W, H);
+  if (v?.poster) g.drawImage(v.poster, 0, 0, W, H); else placeholder(g, W, H);
+  const styles = activeStyles();
+  if (!styles.includes(S.pvStyle)) S.pvStyle = styles[0] || 'tiktok';
+  for (const b of $('pvstyle').children) { b.setAttribute('aria-pressed', String(b.dataset.style === S.pvStyle)); b.disabled = !S.styles[b.dataset.style]; }
+  if ($('zones').checked) {
+    const k = W / REF, kh = H / 1920;
+    g.fillStyle = 'rgba(255, 70, 70, .22)';
+    g.fillRect(0, 0, W, SAFE.top * kh);
+    g.fillRect(0, H - SAFE.bottom * kh, W, SAFE.bottom * kh);
+    g.fillRect(W - SAFE.right * k, SAFE.rightFrom * kh, SAFE.right * k, H - SAFE.bottom * kh - SAFE.rightFrom * kh);
+  }
+  const c = previewCaption();
+  const sel = selected();
+  $('pvcnt').textContent = c ? (c.on ? `Caption ${sel.indexOf(c) + 1} of ${sel.length}` : 'Not ticked') : '';
+  if (!c) return;
+  const text = textOf(c), style = S.pvStyle, key = style + '|' + text;
+  if (!fontLoads.has(key)) ensureFonts(text, style).then(() => { if (textOf(c) === text && S.pvStyle === style) drawPreview(); });
+  const { box } = drawCaption(g, text, style, W, H, S.pos);
+  const probs = zoneProblems(box, W, H);
+  $('zonewarn').hidden = !probs.length;
+  $('zonewarn').textContent = probs.length ? 'This caption sits ' + probs.join(' and ') + (touch ? '. Pick another position under Caption style.' : '. Move it on the preview or pick another position.') : '';
+}
+function stepPreview(d) {
+  const sel = selected(); if (!sel.length) return;
+  const i = sel.findIndex(c => c.id === S.pvCap);
+  S.pvCap = sel[(i + d + sel.length) % sel.length].id;
+  markPreviewing(); drawPreview();
+  if (!matchMedia(PHONE_LAYOUT).matches) document.getElementById('ta-' + S.pvCap)?.scrollIntoView({ block: 'nearest' });
+}
+function setPos(p) {
+  S.pos = Math.min(0.74, Math.max(0.1, p)); store.set('pos', S.pos);
+  $('pos').value = (S.pos * 100).toFixed(1);
+  for (const b of $('posseg').children) b.setAttribute('aria-pressed', String(Math.abs(+b.dataset.pos - S.pos) < 0.005));
+  drawPreview();
+}
+
+function jobs() {
+  const vids = S.videos.filter(v => v.status === 'ok'), caps = selected(), styles = activeStyles();
+  const out = [];
+  for (const v of vids) caps.forEach((c, ci) => styles.forEach(st => out.push({ v, c, ci, st, text: textOf(c) })));
+  return out;
+}
+function updateMake() {
+  const vids = S.videos.filter(v => v.status === 'ok').length, caps = selected().length, st = activeStyles().length;
+  const n = vids * caps * st;
+  $('equation').innerHTML = `${vids} video${vids === 1 ? '' : 's'} × ${caps} caption${caps === 1 ? '' : 's'} × ${st} style${st === 1 ? '' : 's'} = <b>${n} MP4${n === 1 ? '' : 's'}</b>`;
+  const reading = S.videos.some(v => v.status === 'reading');
+  let why = '';
+  if (!S.videos.length) why = 'Add at least one raw video.';
+  else if (reading) why = 'Reading the videos…';
+  else if (!vids) why = 'None of the videos can be read in this browser.';
+  else if (!caps) why = 'Tick at least one caption.';
+  else if (!st) why = 'Pick a caption style.';
+  else if (S.encoderError) why = S.encoderError;
+  let warn = '';
+  if (touch && !why) {
+    const held = S.results.reduce((a, r) => a + (r.size || 0), 0);
+    const perJob = S.videos.filter(v => v.status === 'ok').reduce((a, v) => a + (v.bitrate + 2e5) * v.dur / 8, 0) * caps * st / n;
+    if (held + perJob * n > PHONE_BUDGET) {
+      const fit = Math.floor((PHONE_BUDGET - held) / perJob);
+      warn = fit < 1 ? 'The phone is holding all it safely can. Save the finished videos, tap “Clear list”, then make more.'
+        : `Too much for one go on a phone. Make up to ${fit} now (untick some captions), save them, clear the list, then do the rest.`;
+    }
+  }
+  if (!S.running) { $('go').disabled = !!why; $('go').textContent = n ? `Make ${n} video${n === 1 ? '' : 's'}` : 'Make videos'; }
+  $('why').textContent = S.running ? '' : (why || warn);
+  $('why').classList.toggle('warn', !why && !!warn);
+}
+let cancelCurrent = null, stopRequested = false, starting = false;
+async function make() {
+  if (S.running) { stopRequested = true; cancelCurrent?.(); return; }
+  if (starting) return;
+  const list = jobs(); if (!list.length) return;
+  starting = true; $('go').disabled = true; $('go').textContent = 'Checking the video encoder…';
+  try {
+    await mbReady; if (!MB) return;
+    await pickAvcProfile();
+  } catch (e) {
+    S.encoderError = e.message; showBanner(e.message); return;
+  } finally {
+    starting = false; if (!S.running) updateMake();
+  }
+  S.running = true; stopRequested = false;
+  $('go').textContent = 'Stop'; $('go').classList.add('stop'); $('go').disabled = false;
+  $('bar').hidden = false; $('status').hidden = false;
+  const t0 = performance.now();
+  let done = 0;
+  const pos = S.pos, mission = S.mission;
+  for (const j of list) {
+    if (stopRequested) break;
+    const base = j.v.name.replace(/\.[^.]+$/, '').replace(/[^\w.-]+/g, '_');
+    const name = `${base}_${mission}_${j.st === 'snap' ? 'snap' : 'tiktok'}_${String(j.ci + 1).padStart(2, '0')}.mp4`;
+    $('status').textContent = `${done + 1}/${list.length} · ${name}`;
+    try {
+      const prog = (p) => { $('bar').firstChild.style.width = ((done + p) / list.length * 100).toFixed(1) + '%'; };
+      let buf;
+      try { buf = await renderOne(j.v, j.text, j.st, pos, prog); }
+      catch (e) {
+        if (!e?.stalled || avcProfile !== 'high' || stopRequested) throw e;
+        avcProfile = 'baseline';
+        buf = await renderOne(j.v, j.text, j.st, pos, prog);
+      }
+      const bytes = new Uint8Array(buf);
+      addResult({ name, blob: new Blob([bytes], { type: 'video/mp4' }), crc: crc32(bytes), size: bytes.length, caption: j.text, style: j.st, kind: j.c.kind, mission, post: postFor(S.results.length, mission), v: j.v, pos });
+    } catch (e) {
+      if (stopRequested) break;
+      addResult({ name, err: e?.message || String(e), caption: j.text, style: j.st, kind: j.c.kind, mission, v: j.v, pos });
+    }
+    done++;
+  }
+  const secs = (performance.now() - t0) / 1000;
+  S.running = false; cancelCurrent = null;
+  $('go').classList.remove('stop');
+  $('bar').firstChild.style.width = '100%';
+  $('status').textContent = stopRequested ? `Stopped after ${done} of ${list.length}.` : `Done: ${done} file${done === 1 ? '' : 's'} in ${secs.toFixed(0)} s.`;
+  updateMake();
+  if (!stopRequested) $('results').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+}
+async function renderOne(v, text, style, pos, onProgress) {
+  const input = new MB.Input({ formats: MB.ALL_FORMATS, source: new MB.BlobSource(v.file) });
+  const output = new MB.Output({ format: new MB.Mp4OutputFormat({ fastStart: 'in-memory' }), target: new MB.BufferTarget() });
+  const W = v.outW, H = v.outH;
+  await ensureFonts(text, style);
+  const frame = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(W, H) : Object.assign(document.createElement('canvas'), { width: W, height: H });
+  const g = frame.getContext('2d');
+  const layer = captionLayer(text, style, W, H, pos);
+  const conv = await MB.Conversion.init({
+    input, output,
+    video: {
+      width: W, height: H, fit: 'fill', allowTransformationMetadata: false,
+      codec: 'avc', bitrate: v.bitrate, frameRate: v.fps, forceTranscode: true,
+      process: (sample) => { sample.draw(g, 0, 0, W, H); g.drawImage(layer, 0, 0); return frame; },
+      processedWidth: W, processedHeight: H,
+    },
+  });
+  if (!conv.isValid) { input.dispose?.(); throw new Error('Can’t convert: ' + conv.discardedTracks.map(d => d.reason).join(', ')); }
+  let last = performance.now(), tick = last, stalled = false;
+  conv.onProgress = (p) => { last = performance.now(); onProgress(p); };
+  const dog = setInterval(() => {
+    const now = performance.now();
+    if (document.hidden || now - tick > 6000) last = now;
+    tick = now;
+    if (now - last > 25000) { stalled = true; conv.cancel(); }
+  }, 2000);
+  cancelCurrent = () => conv.cancel();
+  try { await conv.execute(); }
+  catch (e) { if (stalled) throw Object.assign(new Error('The video encoder stopped responding. Reload the page and try again.'), { stalled: true }); throw e; }
+  finally { clearInterval(dog); input.dispose?.(); }
+  return output.target.buffer;
+}
+function postFor(i, mission) { return `${POSTS[i % POSTS.length]} ${HASHTAGS} ${MISSIONS[mission].tag}`; }
+
+function addResult(r) {
+  S.results.push(r);
+  const card = document.createElement('div'); card.className = 'out' + (r.err ? ' fail' : '');
+  const th = document.createElement('canvas'); th.width = 108; th.height = 192;
+  const g = th.getContext('2d');
+  if (r.v.poster) g.drawImage(r.v.poster, 0, 0, 108, Math.round(108 * r.v.outH / r.v.outW)); else placeholder(g, 108, 192);
+  try { drawCaption(g, r.caption, r.style, 108, Math.round(108 * r.v.outH / r.v.outW), r.pos); } catch {}
+  const info = document.createElement('div'); info.style.minWidth = '0';
+  const fn = document.createElement('div'); fn.className = 'fn'; fn.textContent = r.name;
+  const ct = document.createElement('div'); ct.className = 'ct'; ct.textContent = r.err ? 'Failed: ' + r.err : r.caption;
+  const row = document.createElement('div'); row.className = 'row';
+  if (!r.err) {
+    const sz = document.createElement('span'); sz.className = 'sz'; sz.textContent = fmtSize(r.size);
+    const sv = document.createElement('button'); sv.className = 'btn save';
+    sv.textContent = shareOK ? 'Save to Photos' : 'Save';
+    sv.onclick = () => shareOK ? shareResults([r]) : saveOne(r);
+    const cp = document.createElement('button'); cp.className = 'btn'; cp.textContent = 'Copy post text'; cp.title = r.post;
+    cp.onclick = async () => { try { await navigator.clipboard.writeText(r.post); toast('Post text copied'); } catch { toast(r.post, 6000); } };
+    row.append(sv, cp, sz);
+  }
+  info.append(fn, ct, row);
+  card.append(th, info);
+  r.card = card;
+  $('grid').append(card);
+  $('noresults').hidden = true;
+  $('clearres').disabled = false;
+  updateSaveAll();
+}
+let shareOK = canShareFiles;
+const SHARE_BYTES = 60e6;
+function nextShareBatch() {
+  const out = []; let sum = 0;
+  for (const r of S.results) {
+    if (r.err || r.saved) continue;
+    if (out.length && sum + r.size > SHARE_BYTES) break;
+    out.push(r); sum += r.size;
+  }
+  return out;
+}
+function markSaved(r) { r.saved = true; r.card?.classList.add('saved'); updateSaveAll(); }
+async function saveOne(r) { if ((await saveFile(r.name, r.blob)) === true) markSaved(r); }
+async function shareResults(list) {
+  if (!list.length) return;
+  const files = list.map(r => new File([r.blob], r.name, { type: 'video/mp4' }));
+  try { await navigator.share({ files }); list.forEach(markSaved); }
+  catch (e) {
+    if (e?.name === 'AbortError') return;
+    shareOK = false;
+    document.querySelectorAll('.out .btn.save').forEach(b => (b.textContent = 'Save'));
+    updateSaveAll();
+    toast('The share sheet isn’t available here, so the videos are saved as files instead.');
+    for (const r of list) { if ((await saveFile(r.name, r.blob)) !== true) break; markSaved(r); }
+  }
+}
+function updateSaveAll() {
+  const ok = S.results.filter(r => !r.err), left = ok.filter(r => !r.saved), b = $('zipall');
+  const batch = shareOK ? nextShareBatch().length : 0;
+  b.disabled = !ok.length || ((shareOK || touch) && !left.length);
+  b.textContent = shareOK
+    ? (!ok.length ? 'Save to Photos' : !left.length ? 'All saved' : batch === left.length ? `Save ${batch} to Photos` : `Save next ${batch} to Photos`)
+    : touch ? (ok.length && !left.length ? 'All saved' : 'Save all') : 'Save all as ZIP';
+  const saved = ok.length - left.length;
+  $('sum').textContent = ok.length ? `${ok.length} file${ok.length === 1 ? '' : 's'} · ${fmtSize(ok.reduce((a, x) => a + x.size, 0))}` + (saved ? ` · ${saved} saved` : '') : '';
+  updateMake();
+}
+async function saveAll() {
+  if (shareOK) return shareResults(nextShareBatch());
+  if (touch) {
+    const left = S.results.filter(r => !r.err && !r.saved);
+    let n = 0;
+    for (const r of left) {
+      const res = await saveFile(r.name, r.blob, true);
+      if (res !== true) { if (res === 'rate_limited') toast(`Saved ${n} of ${left.length}. Wait a few seconds, then tap “Save all” again.`); break; }
+      markSaved(r); n++;
+    }
+    return;
+  }
+  zipAll();
+}
+let DL = null;
+const dlReady = (async () => { try { if (window.claude?.use) DL = await window.claude.use('downloads'); } catch {} return DL; })();
+async function saveFile(name, blob, quiet) {
+  await dlReady;
+  if (DL) {
+    try { await DL.save({ filename: name, data: blob }); toast('Saved ' + name); return true; }
+    catch (e) {
+      if (e?.code === 'declined') return false;
+      if (e?.code === 'rate_limited') { if (!quiet) toast('Wait a few seconds, then tap Save again.'); return 'rate_limited'; }
+      toast(e?.code === 'too_large' ? 'That video is too big to save here.' : 'Saving isn’t available here. Open the page in Safari or Chrome instead.');
+      return false;
+    }
+  }
+  if (window.claude && window.top !== window) { toast('Saving isn’t available here. Open the page in Safari or Chrome instead.'); return false; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 120000);
+  return 'unknown';
+}
+function csvCell(s) { return '"' + String(s).replace(/"/g, '""') + '"'; }
+function zipAll() {
+  const ok = S.results.filter(r => !r.err);
+  if (!ok.length) return;
+  const csv = '﻿' + ['file,mission,style,caption_type,caption,post_text']
+    .concat(ok.map(r => [r.name, r.mission, r.style === 'snap' ? 'snapchat' : 'tiktok', r.kind, r.caption.replace(/\n/g, ' / '), r.post].map(csvCell).join(','))).join('\r\n');
+  const csvBytes = new TextEncoder().encode(csv);
+  const entries = ok.map(r => ({ name: r.name, data: r.blob, crc: r.crc, size: r.size }));
+  entries.push({ name: 'captions.csv', data: new Blob([csvBytes]), crc: crc32(csvBytes), size: csvBytes.length });
+  const stamp = new Date().toISOString().slice(0, 16).replace(/[-:]/g, '').replace('T', '-');
+  saveFile(`dawnce-captions-${stamp}.zip`, buildZip(entries));
+}
+
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(b) { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC_T[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function buildZip(entries) {
+  const enc = new TextEncoder(), parts = [], central = [];
+  const d = new Date(), dosTime = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), dosDate = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  let offset = 0;
+  for (const e of entries) {
+    const nm = enc.encode(e.name);
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true);
+    h.setUint16(10, dosTime, true); h.setUint16(12, dosDate, true); h.setUint32(14, e.crc, true);
+    h.setUint32(18, e.size, true); h.setUint32(22, e.size, true); h.setUint16(26, nm.length, true); h.setUint16(28, 0, true);
+    parts.push(h.buffer, nm, e.data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true);
+    c.setUint16(12, dosTime, true); c.setUint16(14, dosDate, true); c.setUint32(16, e.crc, true); c.setUint32(20, e.size, true); c.setUint32(24, e.size, true);
+    c.setUint16(28, nm.length, true); c.setUint32(42, offset, true);
+    central.push(c.buffer, nm);
+    offset += 30 + nm.length + e.size;
+  }
+  const cdSize = central.reduce((a, p) => a + (p.byteLength ?? p.length), 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, entries.length, true); end.setUint16(10, entries.length, true);
+  end.setUint32(12, cdSize, true); end.setUint32(16, offset, true);
+  return new Blob([...parts, ...central, end.buffer], { type: 'application/zip' });
+}
+let toastTimer;
+function toast(msg, ms = 2600) {
+  let t = document.querySelector('.toast');
+  if (!t) { t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); document.body.append(t); }
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), ms);
+}
+
+function renderStyles() {
+  for (const b of $('styles').children) b.setAttribute('aria-pressed', String(!!S.styles[b.dataset.style]));
+}
+function renderAll() { renderMissions(); renderCaps(); renderStyles(); setPos(S.pos); updateMake(); }
+
+$('file').onchange = (e) => { addFiles([...e.target.files]); e.target.value = ''; };
+const drop = $('drop');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, () => drop.classList.remove('over')));
+drop.addEventListener('drop', (e) => { e.preventDefault(); addFiles([...e.dataTransfer.files]); });
+for (const b of $('styles').children) b.onclick = () => {
+  S.styles[b.dataset.style] = !S.styles[b.dataset.style]; store.set('styles', S.styles);
+  if (S.styles[b.dataset.style]) S.pvStyle = b.dataset.style;
+  renderStyles(); drawPreview(); updateMake();
+};
+for (const b of $('pvstyle').children) b.onclick = () => { if (S.styles[b.dataset.style]) { S.pvStyle = b.dataset.style; drawPreview(); } };
+for (const b of $('posseg').children) b.onclick = () => setPos(+b.dataset.pos);
+$('pos').oninput = (e) => setPos(e.target.value / 100);
+for (const b of $('filter').children) b.onclick = () => { S.filter = b.dataset.f; for (const x of $('filter').children) x.setAttribute('aria-pressed', String(x === b)); renderCaps(); };
+$('pick').onclick = () => { pickMix(capsFor(S.mission), Math.max(2, +$('pickn').value || 6)); S.pvCap = null; renderCaps(); drawPreview(); };
+$('all').onclick = () => { capsFor(S.mission).forEach(c => c.on = true); renderCaps(); drawPreview(); };
+$('none').onclick = () => { capsFor(S.mission).forEach(c => c.on = false); renderCaps(); drawPreview(); };
+$('addform').onsubmit = (e) => {
+  e.preventDefault();
+  const t = $('addtext').value.trim(); if (!t) return;
+  (S.own[S.mission] ||= []).push(t); store.set('own', S.own);
+  const c = { id: 'c' + uid++, kind: 'own', raw: t, src: 'Added by you', edited: null, on: true };
+  capsFor(S.mission).push(c); S.pvCap = c.id; $('addtext').value = '';
+  renderCaps(); drawPreview();
+};
+$('prev').onclick = () => stepPreview(-1);
+$('next').onclick = () => stepPreview(1);
+$('zones').onchange = drawPreview;
+$('go').onclick = make;
+$('zipall').onclick = saveAll;
+$('clearres').onclick = () => { S.results = []; $('grid').innerHTML = ''; $('noresults').hidden = false; $('clearres').disabled = true; updateSaveAll(); };
+if (touch) {
+  $('droptitle').textContent = 'Tap to choose videos';
+  $('dropnote').textContent = 'Pick one or several from your camera roll.';
+  $('noresults').textContent = 'Finished videos show up here with the original sound. Save them to Photos, then post them like any other video. “Copy post text” gives a suggested description for each one.';
+}
+updateSaveAll();
+const pv = $('pv');
+let dragging = false;
+const posFromEvent = (e) => { const r = pv.getBoundingClientRect(); return (e.clientY - r.top) / r.height; };
+pv.addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch') return; dragging = true; pv.setPointerCapture(e.pointerId); setPos(posFromEvent(e)); });
+pv.addEventListener('pointermove', (e) => { if (dragging) setPos(posFromEvent(e)); });
+pv.addEventListener('pointerup', () => { dragging = false; });
+
+renderAll();
+drawPreview();
+window.__captioner = { S, addFiles, make, jobs, drawCaption, STY, BANK, zipAll, buildZip, profile: () => avcProfile };
+</script>
+</body></html>
