@@ -86,6 +86,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .posrow { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 14px; align-items: center; }
 .posrow input[type="range"] { width: 100%; accent-color: var(--accent); }
 .posrow .seg { justify-self: start; }
+.posrow .note { margin: 0; font-size: 13px; color: var(--muted); }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
 .seg button { border: 0; background: var(--bg); padding: 6px 12px; font-size: 13px; font-weight: 600; }
 .seg button + button { border-left: 1px solid var(--line); }
@@ -158,55 +159,6 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .empty { color: var(--muted); margin: 0; }
 .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; max-width: calc(100vw - 32px); }
 .banner { background: var(--proven-soft); color: var(--ink); border: 1px solid var(--proven); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; }
-.wiz { display: grid; }
-.scr { display: grid; align-content: center; justify-items: center; gap: 20px; text-align: center; min-height: 100svh; padding-block: calc(env(safe-area-inset-top, 0px) + 20px) 48px; }
-.scr .q { margin: 0; font: 800 clamp(28px, 7.5vw, 42px)/1.08 var(--display); letter-spacing: -0.02em; max-width: 16ch; text-wrap: balance; }
-.scr .sub { margin: 0; color: var(--muted); max-width: 34ch; text-wrap: pretty; }
-.scr .sub.err { color: var(--warn); }
-.plus { position: relative; width: min(64vw, 240px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); cursor: pointer; box-shadow: 0 18px 50px rgba(139, 63, 224, .35); transition: transform .15s; -webkit-tap-highlight-color: transparent; }
-.plus:active { transform: scale(.96); }
-.plus .pl { font: 300 clamp(120px, 36vw, 160px)/1 var(--body); margin-top: -0.12em; pointer-events: none; }
-.plus input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-.opts { display: grid; gap: 12px; width: min(100%, 440px); }
-.opts.two-up { grid-template-columns: 1fr 1fr; }
-.opt { background: var(--surface); border: 1.5px solid var(--line); border-radius: 18px; padding: 22px 14px; display: grid; gap: 6px; justify-items: center; font: 700 19px/1.2 var(--display); -webkit-tap-highlight-color: transparent; transition: border-color .15s, background .15s; }
-.opt:not([aria-pressed]):hover, .opt:not([aria-pressed]):active { border-color: var(--accent); background: var(--accent-soft); }
-.opt .em { font-size: 42px; line-height: 1; }
-.opt[aria-pressed] { position: relative; }
-.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
-.opt[aria-pressed="true"]::after { content: "✓"; position: absolute; top: 10px; right: 12px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); font: 700 14px/1 var(--body); }
-.opt.sty { padding: 26px 14px 16px; font-size: 16px; }
-.opt.sty[aria-pressed="true"]::after { top: 8px; right: 8px; width: 20px; height: 20px; font-size: 12px; }
-.scr .lbl { margin: -8px 0 -6px; }
-.wheelrow { display: flex; align-items: center; gap: 14px; }
-.wheelrow .lbl { margin: 0; text-align: left; }
-.wheelbox { position: relative; width: 92px; height: 144px; border: 1.5px solid var(--line); border-radius: 18px; background: var(--surface); overflow: hidden; }
-.wheel { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; overscroll-behavior: contain; -webkit-mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent); mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent); }
-.wheel::-webkit-scrollbar { display: none; }
-.wheel:focus-visible { outline: none; }
-.wheelbox:focus-within { border-color: var(--accent); }
-.wheel > div { height: 48px; display: grid; place-items: center; font: 700 28px/1 var(--mono); color: var(--muted); scroll-snap-align: center; transition: color .1s, font-size .1s; }
-.wheel > div.pad { scroll-snap-align: none; }
-.wheel > div.on { color: var(--accent); font-size: 36px; }
-.wheelbox .band { position: absolute; left: 8px; right: 8px; top: 48px; height: 48px; border-block: 2px solid var(--accent); border-radius: 4px; pointer-events: none; opacity: .5; }
-.opt .d { font: 400 14px/1.35 var(--body); color: var(--muted); max-width: 28ch; }
-.opt.proven .em + b { color: var(--proven); } .opt.new .em + b { color: var(--new); }
-.bigin { font: 700 44px/1 var(--mono); width: 4.5ch; text-align: center; padding: 12px 8px; border: 1.5px solid var(--line); border-radius: 16px; background: var(--surface); }
-.bigin[type="text"] { font: 600 26px/1.2 var(--body); width: min(100%, 14ch); }
-.bigin:focus { outline: none; border-color: var(--accent); }
-.wform { display: grid; justify-items: center; gap: 16px; }
-.wform .go, .scr > .go { min-width: 220px; padding: 16px 22px; font-size: 18px; }
-.back { border: 0; background: none; color: var(--muted); font-weight: 600; padding: 10px 14px; }
-.wbar { width: min(100%, 360px); height: 12px; border-radius: 6px; background: var(--line); overflow: hidden; }
-.wbar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
-.wiz .results { margin: 0; width: 100%; text-align: left; }
-.wiz .results h2, .wiz #noresults { display: none; }
-.wiz .results header { justify-content: center; }
-.wiz .results header .row { justify-content: center; width: 100%; }
-.wiz #zipall { order: -1; flex-basis: 100%; max-width: 440px; padding: 18px 22px; border-radius: 14px; font: 700 18px/1 var(--display); }
-.wiz .scr[data-s="done"] { align-content: start; padding-top: 12px; }
-.advlink { font-size: 13px; color: var(--muted); }
-body.wizmode .work, body.wizmode header.top { display: none; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 @media (max-width: 900px), (pointer: coarse) and (max-height: 560px) {
   .work { grid-template-columns: minmax(0, 1fr); gap: 14px; }
@@ -230,62 +182,6 @@ body.wizmode .work, body.wizmode header.top { display: none; }
     <p class="tagline">Pick a mission, add your raw videos, get one video per caption. Everything happens on your phone or computer. Nothing is uploaded.</p>
   </header>
   <div id="banner" class="banner" hidden></div>
-
-  <section class="wiz" id="wiz" hidden aria-live="polite">
-    <div class="scr" data-s="add">
-      <label class="plus"><input type="file" id="wfile" accept="video/*,.mov,.mp4,.m4v" multiple aria-label="Add your video"><span class="pl" aria-hidden="true">+</span></label>
-      <h2 class="q">Add your video</h2>
-      <p class="sub" id="waddsub">The raw clip, no captions on it yet. Several at once is fine.</p>
-      <a class="advlink" href="?advanced">Advanced editor</a>
-    </div>
-    <div class="scr" data-s="mission" hidden>
-      <h2 class="q">Which mission is in the video?</h2>
-      <div class="opts two-up" id="wmissions"></div>
-      <button class="back" data-back="add">Back</button>
-    </div>
-    <div class="scr" data-s="param" hidden>
-      <h2 class="q" id="wparamq"></h2>
-      <form class="wform" id="wparamf">
-        <input class="bigin" id="wparam" required autocomplete="off">
-        <button class="go" type="submit">Next</button>
-      </form>
-      <p class="sub">It goes into the captions, so match what the app shows in your video.</p>
-      <button class="back" data-back="mission">Back</button>
-    </div>
-    <div class="scr" data-s="kind" hidden>
-      <h2 class="q">Which captions do you want?</h2>
-      <p class="lbl">Tick one or both</p>
-      <div class="opts two-up">
-        <button class="opt proven" data-kind="proven" aria-pressed="true"><span class="em">🔥</span><b>Proven</b><span class="d">Formats that already worked for other creators</span></button>
-        <button class="opt new" data-kind="new" aria-pressed="true"><span class="em">🧪</span><b>New</b><span class="d">Experimental ideas nobody has posted yet</span></button>
-      </div>
-      <div class="opts two-up">
-        <button class="opt sty" data-wstyle="tiktok" aria-pressed="true"><b>TikTok text</b><span class="d">White, black outline</span></button>
-        <button class="opt sty" data-wstyle="snap" aria-pressed="true"><b>Snapchat bar</b><span class="d">In the dark box</span></button>
-      </div>
-      <div class="wheelrow">
-        <div class="wheelbox">
-          <div class="wheel" id="wwheel" tabindex="0" role="spinbutton" aria-label="Videos per clip" aria-valuemin="1" aria-valuemax="6" aria-valuenow="6"></div>
-          <span class="band" aria-hidden="true"></span>
-        </div>
-        <span class="lbl" id="wwheellbl">videos<br>per clip</span>
-      </div>
-      <p class="sub" id="wkindsub"></p>
-      <button class="go" id="wmake">Make 6 videos</button>
-      <button class="back" id="wkindback">Back</button>
-    </div>
-    <div class="scr" data-s="making" hidden>
-      <h2 class="q" id="wmakeq">Making your videos…</h2>
-      <div class="wbar"><i id="wbar"></i></div>
-      <p class="sub" id="wmakesub">Keep this screen open. Everything happens on your phone, nothing is uploaded.</p>
-      <button class="back" id="wstop">Stop</button>
-    </div>
-    <div class="scr" data-s="done" hidden>
-      <h2 class="q">Your videos are ready</h2>
-      <div id="wresults" style="width:100%"></div>
-      <button class="btn" id="wagain">Make more</button>
-    </div>
-  </section>
 
   <main class="work">
     <div class="steps">
@@ -321,14 +217,25 @@ body.wizmode .work, body.wizmode header.top { display: none; }
           <span></span>
           <input type="range" id="pos" min="10" max="74" step="0.5" value="22" aria-label="Caption height on screen">
         </div>
+        <div class="posrow">
+          <span class="lbl">Small changes</span>
+          <div class="seg" id="vary" role="group" aria-label="Small changes per video">
+            <button data-v="zoom" aria-pressed="false">Zoom</button>
+            <button data-v="color" aria-pressed="false">Colour</button>
+            <button data-v="sound" aria-pressed="false">Sound</button>
+          </div>
+          <span></span>
+          <p class="note" id="varynote"></p>
+        </div>
       </section>
 
       <section class="step s-caps" aria-labelledby="h-caps">
         <h2 id="h-caps"><span class="num">4</span>Captions<span class="hint">Tap to tick. Each video gets every ticked caption.</span></h2>
         <div class="captools">
           <label class="lbl" for="pickn">Pick</label>
-          <input type="number" id="pickn" class="pickn" min="1" max="6" step="1" value="6">
+          <input type="number" id="pickn" class="pickn" min="2" max="24" step="2" value="6">
           <button class="btn primary" id="pick">Half proven, half new</button>
+          <button class="btn" id="all">All</button>
           <button class="btn" id="none">None</button>
           <span class="grow"></span>
           <div class="seg" id="filter">
@@ -384,7 +291,7 @@ body.wizmode .work, body.wizmode header.top { display: none; }
       </div>
     </header>
     <div class="grid" id="grid"></div>
-    <p class="empty" id="noresults">Finished MP4s show up here. Each one keeps the original sound and is named after the video, mission, style and caption number. The ZIP also has a captions.csv with a suggested post text for each file.</p>
+    <p class="empty" id="noresults">Finished MP4s show up here, named after the video, mission, style and caption number. The ZIP also has a captions.csv with a suggested post text for each file.</p>
   </section>
 </div>
 
@@ -629,6 +536,53 @@ function zoneProblems(box, W, H) {
   return out;
 }
 
+const LOOK_SALT = Math.random().toString(36).slice(2);
+function hash32(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed) {
+  return () => { seed = (seed + 0x6D2B79F5) >>> 0; let t = seed; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+function lookFor(v, c, style) {
+  const want = S.vary;
+  if (!want.zoom && !want.color && !want.sound) return null;
+  const r = rng(hash32(`${v.id}|${c.id}|${style}|${LOOK_SALT}`)), sign = () => (r() < 0.5 ? -1 : 1);
+  const look = {};
+  if (want.zoom) Object.assign(look, { zoom: 1.02 + 0.04 * r(), cx: 0.4 + 0.2 * r(), cy: 0.4 + 0.2 * r() });
+  if (want.color) Object.assign(look, { warm: sign() * (0.03 + 0.05 * r()), light: sign() * (0.015 + 0.03 * r()), desat: 0.1 * r() });
+  if (want.sound) look.gainDb = -(0.5 + r());  // only ever quieter: turning loud music up would clip it
+  return look;
+}
+function describeLook(look) {
+  if (!look) return '';
+  const p = [];
+  if (look.zoom) p.push(`zoom +${Math.round((look.zoom - 1) * 100)} %`);
+  if (look.warm) p.push(look.warm > 0 ? 'warmer' : 'cooler', look.light > 0 ? 'lighter' : 'darker');
+  if (look.gainDb) p.push(`volume ${look.gainDb > 0 ? '+' : ''}${look.gainDb.toFixed(1)} dB`);
+  return p.join(', ');
+}
+function drawWithLook(g, W, H, look, drawSrc) {
+  if (look?.zoom) { const z = look.zoom; g.setTransform(z, 0, 0, z, -(z - 1) * look.cx * W, -(z - 1) * look.cy * H); }
+  drawSrc();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  if (look?.warm) {
+    g.globalCompositeOperation = 'soft-light';
+    g.fillStyle = look.warm > 0 ? `rgba(255,150,60,${(look.warm * 2).toFixed(3)})` : `rgba(60,140,255,${(-look.warm * 2).toFixed(3)})`;
+    g.fillRect(0, 0, W, H);
+    g.globalCompositeOperation = look.light > 0 ? 'screen' : 'multiply';
+    g.fillStyle = look.light > 0 ? `rgba(255,255,255,${look.light.toFixed(3)})` : `rgba(0,0,0,${(-look.light).toFixed(3)})`;
+    g.fillRect(0, 0, W, H);
+    if (look.desat > 0.01) { g.globalCompositeOperation = 'saturation'; g.fillStyle = `rgba(128,128,128,${look.desat.toFixed(3)})`; g.fillRect(0, 0, W, H); }
+    g.globalCompositeOperation = 'source-over';
+  }
+}
+function gainProcess(gain) {
+  return (s) => {
+    const n = s.numberOfFrames * s.numberOfChannels, buf = new Float32Array(n);
+    s.copyTo(buf, { planeIndex: 0, format: 'f32' });
+    for (let i = 0; i < n; i++) { const x = buf[i] * gain; buf[i] = x > 1 ? 1 : x < -1 ? -1 : x; }
+    return new MB.AudioSample({ data: buf, format: 'f32', numberOfChannels: s.numberOfChannels, sampleRate: s.sampleRate, timestamp: s.timestamp });
+  };
+}
+
 const $ = (id) => document.getElementById(id);
 const touch = matchMedia('(pointer: coarse)').matches;
 const PHONE_LAYOUT = '(max-width: 900px), (pointer: coarse) and (max-height: 560px)'; // same as the CSS media query
@@ -700,6 +654,7 @@ const S = {
   mission: store.get('mission', 'pushups'),
   params: Object.assign({ pushups: { n: 10 }, skincare: {}, object: { object: 'toothbrush' }, dance: { n: 10 } }, store.get('params', {})),
   styles: store.get('styles', { tiktok: true, snap: false }),
+  vary: Object.assign({ zoom: false, color: false, sound: false }, store.get('vary', {})),
   pos: store.get('pos', 0.22),
   filter: 'all',
   own: store.get('own', { pushups: [], skincare: [], object: [], dance: [] }),
@@ -720,7 +675,7 @@ function capsFor(m) {
       ...b.fresh.map(raw => ({ id: 'c' + uid++, kind: 'new', raw, src: 'New idea', edited: null, on: false })),
       ...(S.own[m] || []).map(raw => ({ id: 'c' + uid++, kind: 'own', raw, src: 'Added by you', edited: null, on: true })),
     ];
-    pickMix(S.caps[m], +$('pickn').value || MAX_PER_VIDEO);
+    pickMix(S.caps[m], +$('pickn').value || 6);
   }
   return S.caps[m];
 }
@@ -734,20 +689,12 @@ const textOf = (c) => c.edited ?? fillText(c.raw, S.mission);
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function pickMix(list, n) {
   list.forEach(c => { if (c.kind !== 'own') c.on = false; });
-  trimToMax(list);
-  n = Math.min(n, maxCaps() - list.filter(c => c.on).length);
-  if (n <= 0) return;
   const half = Math.max(1, Math.floor(n / 2));
   shuffle(list.filter(c => c.kind === 'proven')).slice(0, half).forEach(c => c.on = true);
   shuffle(list.filter(c => c.kind === 'new')).slice(0, n - half).forEach(c => c.on = true);
 }
 const selected = () => capsFor(S.mission).filter(c => c.on && textOf(c).trim());
 const activeStyles = () => ['tiktok', 'snap'].filter(s => S.styles[s]);
-const MAX_PER_VIDEO = 6;
-const maxCaps = () => Math.floor(MAX_PER_VIDEO / Math.max(1, activeStyles().length));
-const tickedCount = () => capsFor(S.mission).filter(c => c.on).length;
-const capFull = () => `Up to ${MAX_PER_VIDEO} versions per video` + (activeStyles().length > 1 ? ' (3 captions × 2 styles)' : '') + '. Untick one first.';
-function trimToMax(list) { let on = list.filter(c => c.on); while (on.length > maxCaps()) on.pop().on = false; }
 
 function renderMissions() {
   $('missions').innerHTML = '';
@@ -778,8 +725,7 @@ function renderCaps() {
   const list = capsFor(S.mission), ol = $('caps');
   const sel = list.filter(c => c.on);
   const np = sel.filter(c => c.kind === 'proven').length, nn = sel.filter(c => c.kind === 'new').length, no = sel.filter(c => c.kind === 'own').length;
-  $('mix').textContent = `${sel.length} of ${maxCaps()} ticked · ${np} proven · ${nn} new` + (no ? ` · ${no} yours` : '');
-  $('pickn').max = maxCaps(); if (+$('pickn').value > maxCaps()) $('pickn').value = maxCaps();
+  $('mix').textContent = `${sel.length} ticked · ${np} proven · ${nn} new` + (no ? ` · ${no} yours` : '');
   ol.innerHTML = '';
   for (const c of list) {
     if (S.filter !== 'all' && c.kind !== S.filter) continue;
@@ -788,10 +734,7 @@ function renderCaps() {
     const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = c.on; cb.id = 'cb-' + c.id;
     cb.setAttribute('aria-label', 'Use this caption');
     cb.onclick = (e) => e.stopPropagation();
-    cb.onchange = () => {
-      if (cb.checked && tickedCount() >= maxCaps()) { cb.checked = false; toast(capFull()); return; }
-      c.on = cb.checked; S.pvCap = c.id; renderCaps(); drawPreview();
-    };
+    cb.onchange = () => { c.on = cb.checked; S.pvCap = c.id; renderCaps(); drawPreview(); };
     const txt = document.createElement('div'); txt.className = 'txt';
     const ta = document.createElement('textarea'); ta.rows = 1; ta.value = textOf(c); ta.id = 'ta-' + c.id; ta.readOnly = true;
     ta.setAttribute('aria-label', 'Caption text');
@@ -823,7 +766,6 @@ function renderCaps() {
     li.onpointerdown = () => { wasEditing = !ta.readOnly; };
     li.onclick = (e) => {
       if (wasEditing || !ta.readOnly || e.target.closest('button')) { wasEditing = false; return; }
-      if (!c.on && tickedCount() >= maxCaps()) { toast(capFull()); return; }
       c.on = !c.on; S.pvCap = c.id; renderCaps(); drawPreview();
     };
     ol.append(li);
@@ -889,7 +831,7 @@ async function addFiles(files) {
     const v = { id: 'v' + uid++, file, name: file.name, status: 'reading' };
     S.videos.push(v);
     renderVids();
-    probe(v).then(() => { renderVids(); if (S.videos.length === 1 || S.cur >= S.videos.length) S.cur = 0; drawPreview(); updateMake(); });
+    probe(v).then(() => { renderVids(); if (S.videos.length === 1 || S.cur >= S.videos.length) S.cur = 0; renderVary(); drawPreview(); updateMake(); });
   }
   updateMake();
 }
@@ -908,6 +850,9 @@ async function probe(v) {
     v.fps = [24, 25, 30, 48, 50, 60].reduce((a, b) => Math.abs(b - rate) < Math.abs(a - rate) ? b : a);
     v.bitrate = Math.round(Math.max(4e6, (touch ? 10e6 : 14e6) * (v.outW * v.outH) / (1080 * 1920) * (v.fps > 30 ? 1.3 : 1)));
     if (!(await MB.canEncodeVideo('avc', { width: v.outW, height: v.outH, bitrate: v.bitrate }))) throw new Error('This browser can’t encode H.264 video at this size.');
+    const at = await input.getPrimaryAudioTrack();
+    v.hasAudio = !!at;
+    v.soundOK = !!at && await MB.canEncodeAudio('aac', { numberOfChannels: await at.getNumberOfChannels(), sampleRate: await at.getSampleRate() }).catch(() => false);
     const pw = 720, ph = Math.round(720 * v.outH / v.outW);
     const sink = new MB.CanvasSink(vt, { width: pw, height: ph, fit: 'fill' });
     const wc = await sink.getCanvas(Math.min(1, v.dur * 0.25));
@@ -934,7 +879,7 @@ function renderVids() {
     meta.textContent = v.status === 'reading' ? 'Reading…' : v.status === 'err' ? v.err : `${v.outW}×${v.outH} · ${v.fps} fps · ${fmtDur(v.dur)} · ${fmtSize(v.file.size)}`;
     info.append(nm, meta);
     const rm = document.createElement('button'); rm.className = 'icon-btn'; rm.type = 'button'; rm.textContent = 'Remove';
-    rm.onclick = (e) => { e.stopPropagation(); S.videos = S.videos.filter(x => x !== v); S.cur = Math.min(S.cur, Math.max(0, S.videos.length - 1)); renderVids(); drawPreview(); updateMake(); };
+    rm.onclick = (e) => { e.stopPropagation(); S.videos = S.videos.filter(x => x !== v); S.cur = Math.min(S.cur, Math.max(0, S.videos.length - 1)); renderVids(); renderVary(); drawPreview(); updateMake(); };
     li.append(th, info, rm);
     li.onclick = () => { S.cur = i; renderVids(); drawPreview(); };
     ul.append(li);
@@ -960,9 +905,10 @@ function drawPreview() {
   if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
   const g = cv.getContext('2d');
   g.clearRect(0, 0, W, H);
-  if (v?.poster) g.drawImage(v.poster, 0, 0, W, H); else placeholder(g, W, H);
   const styles = activeStyles();
   if (!styles.includes(S.pvStyle)) S.pvStyle = styles[0] || 'tiktok';
+  const pc = previewCaption(), look = v?.poster && pc ? lookFor(v, pc, S.pvStyle) : null;
+  if (v?.poster) drawWithLook(g, W, H, look, () => g.drawImage(v.poster, 0, 0, W, H)); else placeholder(g, W, H);
   for (const b of $('pvstyle').children) { b.setAttribute('aria-pressed', String(b.dataset.style === S.pvStyle)); b.disabled = !S.styles[b.dataset.style]; }
   if ($('zones').checked) {
     const k = W / REF, kh = H / 1920;
@@ -999,8 +945,7 @@ function setPos(p) {
 function jobs() {
   const vids = S.videos.filter(v => v.status === 'ok'), caps = selected(), styles = activeStyles();
   const out = [];
-  if (S.plan) { for (const v of vids) S.plan.forEach(({ c, st }, ci) => out.push({ v, c, ci, st, text: textOf(c) })); return out; }
-  for (const v of vids) caps.forEach((c, ci) => styles.forEach(st => out.push({ v, c, ci, st, text: textOf(c) })));
+  for (const v of vids) caps.forEach((c, ci) => styles.forEach(st => out.push({ v, c, ci, st, text: textOf(c), look: lookFor(v, c, st) })));
   return out;
 }
 function updateMake() {
@@ -1014,7 +959,6 @@ function updateMake() {
   else if (!vids) why = 'None of the videos can be read in this browser.';
   else if (!caps) why = 'Tick at least one caption.';
   else if (!st) why = 'Pick a caption style.';
-  else if (caps * st > MAX_PER_VIDEO) why = `Up to ${MAX_PER_VIDEO} versions per video. Untick some captions.`;
   else if (S.encoderError) why = S.encoderError;
   let warn = '';
   const perJob = n ? S.videos.filter(v => v.status === 'ok').reduce((a, v) => a + (v.bitrate + 2e5) * v.dur / 8, 0) * caps * st / n : 0;
@@ -1064,22 +1008,22 @@ async function make() {
     const name = `${base}_${mission}_${j.st === 'snap' ? 'snap' : 'tiktok'}_${String(j.ci + 1).padStart(2, '0')}.mp4`;
     $('status').textContent = `${done + 1}/${list.length} · ${name}`;
     try {
-      const prog = (p) => { $('bar').firstChild.style.width = ((done + p) / list.length * 100).toFixed(1) + '%'; S.onProgress?.(done + p, list.length); };
-      let buf;
-      try { buf = await renderOne(j.v, j.text, j.st, pos, prog); }
+      const prog = (p) => { $('bar').firstChild.style.width = ((done + p) / list.length * 100).toFixed(1) + '%'; };
+      let out;
+      try { out = await renderOne(j.v, j.text, j.st, pos, prog, j.look); }
       catch (e) {
         if (!e?.stalled || avcProfile !== 'high' || stopRequested) throw e;
         avcProfile = 'baseline';
-        buf = await renderOne(j.v, j.text, j.st, pos, prog);
+        out = await renderOne(j.v, j.text, j.st, pos, prog, j.look);
       }
-      const bytes = new Uint8Array(buf);
+      const bytes = new Uint8Array(out.buffer);
       const meta = { name, crc: crc32(bytes), size: bytes.length, caption: j.text, style: j.st, kind: j.c.kind, mission,
-        post: postFor(S.results.length, mission), thumb: thumbFor(j.v, j.text, j.st, pos) };
+        post: postFor(S.results.length, mission), thumb: thumbFor(j.v, j.text, j.st, pos, out.look), changes: describeLook(out.look) };
       addResult({ ...meta, ...(await stash(bytes)) });
       diskSpace().then(updateMake);
     } catch (e) {
       if (stopRequested) break;
-      addResult({ name, err: e?.message || String(e), caption: j.text, style: j.st, kind: j.c.kind, mission, thumb: thumbFor(j.v, j.text, j.st, pos) });
+      addResult({ name, err: e?.message || String(e), caption: j.text, style: j.st, kind: j.c.kind, mission, thumb: thumbFor(j.v, j.text, j.st, pos, j.look) });
     }
     done++;
   }
@@ -1091,23 +1035,41 @@ async function make() {
   updateMake();
   if (!stopRequested) $('results').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
 }
-async function renderOne(v, text, style, pos, onProgress) {
-  const input = new MB.Input({ formats: MB.ALL_FORMATS, source: new MB.BlobSource(v.file) });
-  const output = new MB.Output({ format: new MB.Mp4OutputFormat({ fastStart: 'in-memory' }), target: new MB.BufferTarget() });
+async function renderOne(v, text, style, pos, onProgress, look) {
   const W = v.outW, H = v.outH;
   await ensureFonts(text, style);
   const frame = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(W, H) : Object.assign(document.createElement('canvas'), { width: W, height: H });
   const g = frame.getContext('2d');
   const layer = captionLayer(text, style, W, H, pos);
-  const conv = await MB.Conversion.init({
-    input, output,
-    video: {
-      width: W, height: H, fit: 'fill', allowTransformationMetadata: false,
-      codec: 'avc', bitrate: v.bitrate, frameRate: v.fps, forceTranscode: true,
-      process: (sample) => { sample.draw(g, 0, 0, W, H); g.drawImage(layer, 0, 0); return frame; },
-      processedWidth: W, processedHeight: H,
-    },
-  });
+  if (look?.gainDb && !v.soundOK) look = { ...look, gainDb: 0 };
+  let conv = null;
+  cancelCurrent = () => conv?.cancel();
+  const start = async (withGain) => {
+    const input = new MB.Input({ formats: MB.ALL_FORMATS, source: new MB.BlobSource(v.file) });
+    const output = new MB.Output({ format: new MB.Mp4OutputFormat({ fastStart: 'in-memory' }), target: new MB.BufferTarget() });
+    const main = withGain ? await input.getPrimaryAudioTrack() : null;
+    const c = await MB.Conversion.init({
+      input, output,
+      video: {
+        width: W, height: H, fit: 'fill', allowTransformationMetadata: false,
+        codec: 'avc', bitrate: v.bitrate, frameRate: v.fps, forceTranscode: true,
+        process: (sample) => { drawWithLook(g, W, H, look, () => sample.draw(g, 0, 0, W, H)); g.drawImage(layer, 0, 0); return frame; },
+        processedWidth: W, processedHeight: H,
+      },
+      ...(main ? { audio: (t) => (t.id === main.id
+        ? { codec: 'aac', forceTranscode: true, quality: MB.QUALITY_HIGH, process: gainProcess(10 ** (look.gainDb / 20)) } : undefined) } : {}),
+    });
+    return { input, output, c, main };
+  };
+  let { input, output, c, main } = await start(!!look?.gainDb);
+  conv = c;
+  if (main && c.discardedTracks.some(d => d.track.id === main.id)) {
+    input.dispose?.();
+    look = { ...look, gainDb: 0 };
+    ({ input, output, c } = await start(false));
+    conv = c;
+  }
+  if (stopRequested) { input.dispose?.(); throw new Error('Stopped'); }
   if (!conv.isValid) { input.dispose?.(); throw new Error('Can’t convert: ' + conv.discardedTracks.map(d => d.reason).join(', ')); }
   let last = performance.now(), tick = last, stalled = false;
   conv.onProgress = (p) => { last = performance.now(); onProgress(p); };
@@ -1117,18 +1079,17 @@ async function renderOne(v, text, style, pos, onProgress) {
     tick = now;
     if (now - last > 25000) { stalled = true; conv.cancel(); }
   }, 2000);
-  cancelCurrent = () => conv.cancel();
   try { await conv.execute(); }
   catch (e) { if (stalled) throw Object.assign(new Error('The video encoder stopped responding. Reload the page and try again.'), { stalled: true }); throw e; }
   finally { clearInterval(dog); input.dispose?.(); }
-  return output.target.buffer;
+  return { buffer: output.target.buffer, look };
 }
 function postFor(i, mission) { return `${POSTS[i % POSTS.length]} ${HASHTAGS} ${MISSIONS[mission].tag}`; }
 
-function thumbFor(v, text, style, pos) {
+function thumbFor(v, text, style, pos, look) {
   const c = document.createElement('canvas'); c.width = 108; c.height = 192;
   const g = c.getContext('2d'), h = v.outW ? Math.round(108 * v.outH / v.outW) : 192;
-  if (v.poster) g.drawImage(v.poster, 0, 0, 108, h); else placeholder(g, 108, 192);
+  if (v.poster) drawWithLook(g, 108, h, look, () => g.drawImage(v.poster, 0, 0, 108, h)); else placeholder(g, 108, 192);
   try { drawCaption(g, text, style, 108, h, pos); } catch {}
   return c.toDataURL('image/jpeg', 0.75);
 }
@@ -1149,8 +1110,8 @@ function saveManifest() {
   manifestQueued = true;
   queueMicrotask(() => {
     manifestQueued = false;
-    const list = S.results.filter(r => r.key).map(({ key, name, size, crc, caption, style, kind, mission, post, thumb, saved }) =>
-      ({ key, name, size, crc, caption, style, kind, mission, post, thumb, saved: !!saved }));
+    const list = S.results.filter(r => r.key).map(({ key, name, size, crc, caption, style, kind, mission, post, thumb, changes, saved }) =>
+      ({ key, name, size, crc, caption, style, kind, mission, post, thumb, changes: changes || '', saved: !!saved }));
     diskPut(MANIFEST, JSON.stringify(list)).catch(() => {});
   });
 }
@@ -1164,7 +1125,7 @@ function addResult(r, restored) {
   const ct = document.createElement('div'); ct.className = 'ct'; ct.textContent = r.err ? 'Failed: ' + r.err : r.caption;
   const row = document.createElement('div'); row.className = 'row';
   if (!r.err) {
-    const sz = document.createElement('span'); sz.className = 'sz'; sz.textContent = fmtSize(r.size);
+    const sz = document.createElement('span'); sz.className = 'sz'; sz.textContent = fmtSize(r.size) + (r.changes ? ' · ' + r.changes : '');
     const sv = document.createElement('button'); sv.className = 'btn save';
     sv.textContent = shareOK ? 'Save to Photos' : 'Save';
     sv.onclick = () => shareOK ? shareResults([r]) : saveOne(r);
@@ -1258,8 +1219,8 @@ function csvCell(s) { return '"' + String(s).replace(/"/g, '""') + '"'; }
 function zipAll() {
   const ok = S.results.filter(r => !r.err);
   if (!ok.length) return;
-  const csv = '﻿' + ['file,mission,style,caption_type,caption,post_text']
-    .concat(ok.map(r => [r.name, r.mission, r.style === 'snap' ? 'snapchat' : 'tiktok', r.kind, r.caption.replace(/\n/g, ' / '), r.post].map(csvCell).join(','))).join('\r\n');
+  const csv = '﻿' + ['file,mission,style,caption_type,caption,post_text,changes']
+    .concat(ok.map(r => [r.name, r.mission, r.style === 'snap' ? 'snapchat' : 'tiktok', r.kind, r.caption.replace(/\n/g, ' / '), r.post, r.changes || ''].map(csvCell).join(','))).join('\r\n');
   const csvBytes = new TextEncoder().encode(csv);
   const entries = ok.map(r => ({ name: r.name, data: r.blob, crc: r.crc, size: r.size }));
   entries.push({ name: 'captions.csv', data: new Blob([csvBytes]), crc: crc32(csvBytes), size: csvBytes.length });
@@ -1304,7 +1265,17 @@ function toast(msg, ms = 2600) {
 function renderStyles() {
   for (const b of $('styles').children) b.setAttribute('aria-pressed', String(!!S.styles[b.dataset.style]));
 }
-function renderAll() { renderMissions(); renderCaps(); renderStyles(); setPos(S.pos); updateMake(); }
+function renderVary() {
+  for (const b of $('vary').children) b.setAttribute('aria-pressed', String(!!S.vary[b.dataset.v]));
+  const on = ['zoom', 'color', 'sound'].filter(k => S.vary[k]);
+  const words = { zoom: 'zoom', color: 'colour', sound: 'volume' };
+  let note = on.length
+    ? `Each video gets its own slight ${on.map(k => words[k]).join(', ').replace(/, ([^,]*)$/, ' and $1')} change. The caption stays exactly as it is.`
+    : 'Off: every video keeps the original picture and sound.';
+  if (S.vary.sound && S.videos.some(v => v.status === 'ok' && v.hasAudio && !v.soundOK)) note += ' This browser can’t change the sound, so the volume stays as recorded.';
+  $('varynote').textContent = note;
+}
+function renderAll() { renderMissions(); renderCaps(); renderStyles(); renderVary(); setPos(S.pos); updateMake(); }
 
 $('file').onchange = (e) => { addFiles([...e.target.files]); e.target.value = ''; };
 const drop = $('drop');
@@ -1312,25 +1283,26 @@ const drop = $('drop');
 ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, () => drop.classList.remove('over')));
 drop.addEventListener('drop', (e) => { e.preventDefault(); addFiles([...e.dataTransfer.files]); });
 for (const b of $('styles').children) b.onclick = () => {
-  if (!S.styles[b.dataset.style] && tickedCount() * (activeStyles().length + 1) > MAX_PER_VIDEO) {
-    toast(`Up to ${MAX_PER_VIDEO} versions per video, so both styles allow 3 captions. Untick ${tickedCount() - 3} first.`, 4000); return;
-  }
   S.styles[b.dataset.style] = !S.styles[b.dataset.style]; store.set('styles', S.styles);
   if (S.styles[b.dataset.style]) S.pvStyle = b.dataset.style;
   renderStyles(); drawPreview(); updateMake();
 };
 for (const b of $('pvstyle').children) b.onclick = () => { if (S.styles[b.dataset.style]) { S.pvStyle = b.dataset.style; drawPreview(); } };
+for (const b of $('vary').children) b.onclick = () => {
+  S.vary[b.dataset.v] = !S.vary[b.dataset.v]; store.set('vary', S.vary);
+  renderVary(); drawPreview();
+};
 for (const b of $('posseg').children) b.onclick = () => setPos(+b.dataset.pos);
 $('pos').oninput = (e) => setPos(e.target.value / 100);
 for (const b of $('filter').children) b.onclick = () => { S.filter = b.dataset.f; for (const x of $('filter').children) x.setAttribute('aria-pressed', String(x === b)); renderCaps(); };
-$('pick').onclick = () => { pickMix(capsFor(S.mission), Math.max(1, +$('pickn').value || maxCaps())); S.pvCap = null; renderCaps(); drawPreview(); };
+$('pick').onclick = () => { pickMix(capsFor(S.mission), Math.max(2, +$('pickn').value || 6)); S.pvCap = null; renderCaps(); drawPreview(); };
+$('all').onclick = () => { capsFor(S.mission).forEach(c => c.on = true); renderCaps(); drawPreview(); };
 $('none').onclick = () => { capsFor(S.mission).forEach(c => c.on = false); renderCaps(); drawPreview(); };
 $('addform').onsubmit = (e) => {
   e.preventDefault();
   const t = $('addtext').value.trim(); if (!t) return;
   (S.own[S.mission] ||= []).push(t); store.set('own', S.own);
-  const c = { id: 'c' + uid++, kind: 'own', raw: t, src: 'Added by you', edited: null, on: tickedCount() < maxCaps() };
-  if (!c.on) toast('Added, but not ticked: ' + capFull());
+  const c = { id: 'c' + uid++, kind: 'own', raw: t, src: 'Added by you', edited: null, on: true };
   capsFor(S.mission).push(c); S.pvCap = c.id; $('addtext').value = '';
   renderCaps(); drawPreview();
 };
@@ -1357,7 +1329,7 @@ $('clearres').onclick = async () => {
 if (touch) {
   $('droptitle').textContent = 'Tap to choose videos';
   $('dropnote').textContent = 'Pick one or several from your camera roll.';
-  $('noresults').textContent = 'Finished videos show up here with the original sound. Save them to Photos, then post them like any other video. “Copy post text” gives a suggested description for each one.';
+  $('noresults').textContent = 'Finished videos show up here. Save them to Photos, then post them like any other video. “Copy post text” gives a suggested description for each one.';
 }
 updateSaveAll();
 async function restoreResults() {
@@ -1391,137 +1363,6 @@ pv.addEventListener('pointerup', () => { dragging = false; });
 
 renderAll();
 drawPreview();
-const WIZ = !/advanced/.test(location.search + location.hash);
-const MISSION_EMOJI = { pushups: '💪', skincare: '🧴', object: '🔎', dance: '💃' };
-const PARAM_Q = { pushups: 'How many push-ups did it take?', object: 'Which object did you find?', dance: 'How many seconds of dancing?' };
-function wizGo(s) {
-  for (const el of $('wiz').children) el.hidden = el.dataset.s !== s;
-  window.scrollTo(0, 0);
-  if (s === 'param') setTimeout(() => $('wparam').focus(), 50);
-}
-function wizMissions() {
-  $('wmissions').innerHTML = '';
-  for (const [key, m] of Object.entries(MISSIONS)) {
-    const b = document.createElement('button'); b.className = 'opt';
-    b.innerHTML = `<span class="em">${MISSION_EMOJI[key]}</span><b></b>`; b.querySelector('b').textContent = m.label;
-    b.onclick = () => {
-      S.mission = key; store.set('mission', key); S.pvCap = null;
-      if (!m.param) return wizKind();
-      const inp = $('wparam'); inp.type = m.param.type; inp.value = '';
-      inp.inputMode = m.param.type === 'number' ? 'numeric' : 'text';
-      inp.placeholder = m.param.type === 'number' ? '?' : 'e.g. ' + m.param.def;
-      $('wparamq').textContent = PARAM_Q[key];
-      wizGo('param');
-    };
-    $('wmissions').append(b);
-  }
-}
-const WZ = { kinds: { proven: true, new: true }, styles: { tiktok: true, snap: true }, n: 6 };
-const PER_CLIP = 6;   // the most per clip; the wheel starts here and only goes down
-const halves = (n) => { const a = Math.floor(n / 2), b = n - a; return Math.random() < 0.5 ? [a, b] : [b, a]; };
-const ROW = 48;
-function wheelBuild() {
-  const w = $('wwheel'); w.innerHTML = '<div class="pad"></div>';
-  for (let v = PER_CLIP; v >= 1; v--) { const d = document.createElement('div'); d.textContent = v; d.dataset.v = v; d.onclick = () => wheelSet(v, true); w.append(d); }
-  w.insertAdjacentHTML('beforeend', '<div class="pad"></div>');
-  let t = 0;
-  w.onscroll = () => { wheelRead(); clearTimeout(t); t = setTimeout(wheelRead, 90); };
-  w.onkeydown = (e) => {
-    const d = { ArrowDown: -1, ArrowUp: 1 }[e.key]; if (!d) return;
-    e.preventDefault(); wheelSet(Math.min(PER_CLIP, Math.max(1, WZ.n + d)), true);
-  };
-}
-function wheelRead() {
-  const w = $('wwheel'), v = Math.min(PER_CLIP, Math.max(1, PER_CLIP - Math.round(w.scrollTop / ROW)));
-  for (const d of w.children) d.classList.toggle('on', +d.dataset.v === v);
-  if (v !== WZ.n) { WZ.n = v; w.setAttribute('aria-valuenow', v); wizSummary(); }
-}
-function wheelSet(v, smooth) {
-  $('wwheel').scrollTo({ top: (PER_CLIP - v) * ROW, behavior: smooth ? 'smooth' : 'auto' });
-  WZ.n = v; $('wwheel').setAttribute('aria-valuenow', v); wizSummary();
-  for (const d of $('wwheel').children) d.classList.toggle('on', +d.dataset.v === v);
-}
-function wizSummary() {
-  const n = S.videos.length, k = Object.keys(WZ.kinds).filter(x => WZ.kinds[x]), st = Object.keys(WZ.styles).filter(x => WZ.styles[x]);
-  for (const b of $('wiz').querySelectorAll('[data-kind]')) b.setAttribute('aria-pressed', String(!!WZ.kinds[b.dataset.kind]));
-  for (const b of $('wiz').querySelectorAll('[data-wstyle]')) b.setAttribute('aria-pressed', String(!!WZ.styles[b.dataset.wstyle]));
-  const per = WZ.n, total = n * per;
-  $('wwheellbl').innerHTML = (per === 1 ? 'video' : 'videos') + (n > 1 ? '<br>per clip' : '');
-  $('wmake').disabled = !k.length || !st.length;
-  $('wmake').textContent = `Make ${total} video${total === 1 ? '' : 's'}`;
-  if (!k.length) return void ($('wkindsub').textContent = 'Tick Proven, New or both.');
-  if (!st.length) return void ($('wkindsub').textContent = 'Tick TikTok text, Snapchat bar or both.');
-  const h = per / 2, odd = per % 2 === 1;
-  const kTxt = k.length === 1 ? `${per} ${k[0]} caption${per === 1 ? '' : 's'}`
-    : per === 1 ? '1 caption, proven or new' : odd ? `${per} captions, a mix of proven and new` : `${h} proven + ${h} new captions`;
-  const sTxt = st.length === 1 ? (per === 1 ? '' : 'all ') + (st[0] === 'snap' ? 'as a Snapchat bar' : 'as TikTok text')
-    : per === 1 ? 'as TikTok text or a Snapchat bar' : odd ? 'mixing TikTok text and Snapchat bars' : `${h} as TikTok text, ${h} as a Snapchat bar`;
-  $('wkindsub').textContent = `${n > 1 ? 'Each clip gets ' : ''}${kTxt}, picked for you, ${sTxt}.`;
-}
-function wizKind() {
-  $('wkindback').dataset.back = MISSIONS[S.mission].param ? 'param' : 'mission';
-  wizGo('kind');
-  wheelSet(PER_CLIP);   // always starts on 6 (needs the screen visible to scroll)
-}
-function wizPlan() {
-  const list = capsFor(S.mission), kinds = ['proven', 'new'].filter(k => WZ.kinds[k]);
-  const counts = kinds.length === 2 ? halves(WZ.n) : [WZ.n], caps = [];
-  kinds.forEach((k, i) => caps.push(...shuffle(list.filter(c => c.kind === k)).slice(0, counts[i])));
-  const styles = shuffle(['tiktok', 'snap'].filter(x => WZ.styles[x]));
-  return caps.map((c, i) => ({ c, st: styles[i % styles.length] }));
-}
-function wizError(msg) { S.videos = []; $('waddsub').textContent = msg; $('waddsub').classList.add('err'); wizGo('add'); }
-async function wizMake() {
-  S.plan = wizPlan();
-  $('wmakeq').textContent = 'Reading your video…'; $('wbar').style.width = '0';
-  wizGo('making');
-  while (S.videos.some(v => v.status === 'reading')) await new Promise(r => setTimeout(r, 150));
-  const ok = S.videos.filter(v => v.status === 'ok');
-  if (!ok.length) return wizError(S.videos.find(v => v.err)?.err || 'That file couldn’t be read. Try another video.');
-  const total = jobs().length;
-  $('wmakeq').textContent = `Making ${total} videos…`;
-  S.onProgress = (x, n) => { $('wbar').style.width = (x / n * 100).toFixed(1) + '%'; $('wmakeq').textContent = `Making video ${Math.min(n, Math.floor(x) + 1)} of ${n}…`; };
-  const before = S.results.length;
-  try { await make(); } finally { S.onProgress = null; S.plan = null; }
-  if (S.encoderError) return wizError(S.encoderError);
-  S.videos = [];
-  if (S.results.length === before) return wizGo('add');
-  wizGo('done');
-}
-if (WIZ) {
-  document.body.classList.add('wizmode');
-  $('wiz').hidden = false;
-  $('wresults').append($('results'));
-  wizMissions();
-  wheelBuild();
-  $('wfile').onchange = (e) => {
-    const files = [...e.target.files]; e.target.value = '';
-    S.videos = []; $('waddsub').classList.remove('err');
-    addFiles(files);
-    if (!S.videos.length) { $('waddsub').textContent = 'That isn’t a video file. Pick an MP4 or MOV from your camera roll.'; $('waddsub').classList.add('err'); return; }
-    $('waddsub').textContent = 'The raw clip, no captions on it yet. Several at once is fine.';
-    wizGo('mission');
-  };
-  $('wparamf').onsubmit = (e) => {
-    e.preventDefault();
-    const m = MISSIONS[S.mission], v = $('wparam').value.trim(); if (!v) return;
-    S.params[S.mission][m.param.key] = v; store.set('params', S.params);
-    wizKind();
-  };
-  for (const b of $('wiz').querySelectorAll('[data-kind]')) b.onclick = () => { WZ.kinds[b.dataset.kind] = !WZ.kinds[b.dataset.kind]; wizSummary(); };
-  for (const b of $('wiz').querySelectorAll('[data-wstyle]')) b.onclick = () => { WZ.styles[b.dataset.wstyle] = !WZ.styles[b.dataset.wstyle]; wizSummary(); };
-  $('wmake').onclick = () => wizMake();
-  for (const b of $('wiz').querySelectorAll('.back[data-back]')) b.onclick = () => wizGo(b.dataset.back);
-  $('wkindback').onclick = () => wizGo($('wkindback').dataset.back);
-  $('wstop').onclick = () => { if (S.running) make(); };
-  $('wagain').onclick = async () => {
-    if (S.results.length && S.results.every(r => r.err || r.saved)) {
-      S.results = []; $('grid').innerHTML = ''; if (DISK.ok) await diskWipe(); updateSaveAll();
-    }
-    wizGo('add');
-  };
-  restoring.then(() => { if (S.results.length) wizGo('done'); });
-}
-window.__captioner = { S, wizGo, addFiles, make, jobs, drawCaption, STY, BANK, zipAll, buildZip, profile: () => avcProfile, DISK, diskReady, restoring, nextShareBatch };
+window.__captioner = { S, addFiles, make, jobs, drawCaption, STY, BANK, zipAll, buildZip, profile: () => avcProfile, DISK, diskReady, restoring, nextShareBatch, lookFor };
 </script>
 </body></html>
