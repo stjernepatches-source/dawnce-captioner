@@ -160,6 +160,55 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .empty { color: var(--muted); margin: 0; }
 .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--ink); color: #000; font-weight: 600; padding: 10px 16px; border-radius: 12px; font-size: 14px; max-width: calc(100vw - 32px); }
 .banner { background: var(--proven-soft); color: var(--ink); border: 1px solid var(--proven); border-radius: 16px; padding: 12px 16px; margin-bottom: 16px; }
+.wiz { display: grid; }
+.scr { display: grid; align-content: center; justify-items: center; gap: 20px; text-align: center; min-height: 100svh; padding-block: calc(env(safe-area-inset-top, 0px) + 20px) 48px; }
+.scr .q { margin: 0; font: 800 clamp(28px, 7.5vw, 42px)/1.08 var(--display); letter-spacing: -0.02em; max-width: 16ch; text-wrap: balance; }
+.scr .sub { margin: 0; color: var(--muted); max-width: 34ch; text-wrap: pretty; }
+.scr .sub.err { color: var(--warn); }
+.plus { position: relative; width: min(64vw, 240px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); cursor: pointer; box-shadow: 0 18px 50px rgba(217, 89, 38, .35); transition: transform .15s; -webkit-tap-highlight-color: transparent; }
+.plus:active { transform: scale(.96); }
+.plus .pl { font: 300 clamp(120px, 36vw, 160px)/1 var(--body); margin-top: -0.12em; pointer-events: none; }
+.plus input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.opts { display: grid; gap: 12px; width: min(100%, 440px); }
+.opts.two-up { grid-template-columns: 1fr 1fr; }
+.opt { background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px; padding: 22px 14px; display: grid; gap: 6px; justify-items: center; font: 700 19px/1.2 var(--display); -webkit-tap-highlight-color: transparent; transition: border-color .15s, background .15s; }
+.opt:not([aria-pressed]):hover, .opt:not([aria-pressed]):active { border-color: var(--accent); background: var(--accent-soft); }
+.opt .em { font-size: 42px; line-height: 1; }
+.opt[aria-pressed] { position: relative; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt[aria-pressed="true"]::after { content: "✓"; position: absolute; top: 10px; right: 12px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); font: 700 14px/1 var(--body); }
+.opt.sty { padding: 26px 14px 16px; font-size: 16px; }
+.opt.sty[aria-pressed="true"]::after { top: 8px; right: 8px; width: 20px; height: 20px; font-size: 12px; }
+.scr .lbl { margin: -8px 0 -6px; }
+.wheelrow { display: flex; align-items: center; gap: 14px; }
+.wheelrow .lbl { margin: 0; text-align: left; }
+.wheelbox { position: relative; width: 92px; height: 144px; border: 1.5px solid var(--line); border-radius: 18px; background: var(--surface); overflow: hidden; }
+.wheel { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; overscroll-behavior: contain; -webkit-mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent); mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent); }
+.wheel::-webkit-scrollbar { display: none; }
+.wheel:focus-visible { outline: none; }
+.wheelbox:focus-within { border-color: var(--accent); }
+.wheel > div { height: 48px; display: grid; place-items: center; font: 700 28px/1 var(--mono); color: var(--muted); scroll-snap-align: center; transition: color .1s, font-size .1s; }
+.wheel > div.pad { scroll-snap-align: none; }
+.wheel > div.on { color: var(--accent); font-size: 36px; }
+.wheelbox .band { position: absolute; left: 8px; right: 8px; top: 48px; height: 48px; border-block: 2px solid var(--accent); border-radius: 4px; pointer-events: none; opacity: .5; }
+.opt .d { font: 400 14px/1.35 var(--body); color: var(--muted); max-width: 28ch; }
+.opt.proven .em + b { color: var(--proven); } .opt.new .em + b { color: var(--new); }
+.bigin { font: 700 44px/1 var(--mono); width: 4.5ch; text-align: center; padding: 12px 8px; border: 1.5px solid var(--line); border-radius: 16px; background: var(--surface); }
+.bigin[type="text"] { font: 600 26px/1.2 var(--body); width: min(100%, 14ch); }
+.bigin:focus { outline: none; border-color: var(--accent); }
+.wform { display: grid; justify-items: center; gap: 16px; }
+.wform .go, .scr > .go { min-width: 220px; padding: 16px 22px; font-size: 18px; }
+.back { border: 0; background: none; color: var(--muted); font-weight: 600; padding: 10px 14px; }
+.wbar { width: min(100%, 360px); height: 12px; border-radius: 6px; background: var(--raise); overflow: hidden; }
+.wbar i { display: block; height: 100%; width: 0; border-radius: 6px; background: var(--accent); transition: width .25s; }
+.wiz .results { margin: 0; width: 100%; text-align: left; }
+.wiz .results h2, .wiz #noresults { display: none; }
+.wiz .results header { justify-content: center; }
+.wiz .results header .row { justify-content: center; width: 100%; }
+.wiz #zipall { order: -1; flex-basis: 100%; max-width: 440px; padding: 18px 22px; border-radius: 14px; font: 700 18px/1 var(--display); }
+.wiz .scr[data-s="done"] { align-content: start; padding-top: 12px; }
+.advlink { font-size: 13px; color: var(--muted); }
+body.wizmode .work, body.wizmode header.top { display: none; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 @media (max-width: 900px), (pointer: coarse) and (max-height: 560px) {
   .work { grid-template-columns: minmax(0, 1fr); gap: 14px; }
@@ -183,6 +232,62 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
     <p class="tagline">Pick a mission, add your raw videos, get one video per caption. Everything happens on your phone or computer. Nothing is uploaded.</p>
   </header>
   <div id="banner" class="banner" hidden></div>
+
+  <section class="wiz" id="wiz" hidden aria-live="polite">
+    <div class="scr" data-s="add">
+      <label class="plus"><input type="file" id="wfile" accept="video/*,.mov,.mp4,.m4v" multiple aria-label="Add your video"><span class="pl" aria-hidden="true">+</span></label>
+      <h2 class="q">Add your video</h2>
+      <p class="sub" id="waddsub">The raw clip, no captions on it yet. Several at once is fine.</p>
+      <a class="advlink" href="?advanced">Advanced editor</a>
+    </div>
+    <div class="scr" data-s="mission" hidden>
+      <h2 class="q">Which mission is in the video?</h2>
+      <div class="opts two-up" id="wmissions"></div>
+      <button class="back" data-back="add">Back</button>
+    </div>
+    <div class="scr" data-s="param" hidden>
+      <h2 class="q" id="wparamq"></h2>
+      <form class="wform" id="wparamf">
+        <input class="bigin" id="wparam" required autocomplete="off">
+        <button class="go" type="submit">Next</button>
+      </form>
+      <p class="sub">It goes into the captions, so match what the app shows in your video.</p>
+      <button class="back" data-back="mission">Back</button>
+    </div>
+    <div class="scr" data-s="kind" hidden>
+      <h2 class="q">Which captions do you want?</h2>
+      <p class="lbl">Tick one or both</p>
+      <div class="opts two-up">
+        <button class="opt proven" data-kind="proven" aria-pressed="true"><span class="em">🔥</span><b>Proven</b><span class="d">Formats that already worked for other creators</span></button>
+        <button class="opt new" data-kind="new" aria-pressed="true"><span class="em">🧪</span><b>New</b><span class="d">Experimental ideas nobody has posted yet</span></button>
+      </div>
+      <div class="opts two-up">
+        <button class="opt sty" data-wstyle="tiktok" aria-pressed="true"><b>TikTok text</b><span class="d">White, black outline</span></button>
+        <button class="opt sty" data-wstyle="snap" aria-pressed="true"><b>Snapchat bar</b><span class="d">In the dark box</span></button>
+      </div>
+      <div class="wheelrow">
+        <div class="wheelbox">
+          <div class="wheel" id="wwheel" tabindex="0" role="spinbutton" aria-label="Videos per clip" aria-valuemin="1" aria-valuemax="6" aria-valuenow="6"></div>
+          <span class="band" aria-hidden="true"></span>
+        </div>
+        <span class="lbl" id="wwheellbl">videos<br>per clip</span>
+      </div>
+      <p class="sub" id="wkindsub"></p>
+      <button class="go" id="wmake">Make 6 videos</button>
+      <button class="back" id="wkindback">Back</button>
+    </div>
+    <div class="scr" data-s="making" hidden>
+      <h2 class="q" id="wmakeq">Making your videos…</h2>
+      <div class="wbar"><i id="wbar"></i></div>
+      <p class="sub" id="wmakesub">Keep this screen open. Everything happens on your phone, nothing is uploaded.</p>
+      <button class="back" id="wstop">Stop</button>
+    </div>
+    <div class="scr" data-s="done" hidden>
+      <h2 class="q">Your videos are ready</h2>
+      <div id="wresults" style="width:100%"></div>
+      <button class="btn" id="wagain">Make more</button>
+    </div>
+  </section>
 
   <main class="work">
     <div class="steps">
@@ -234,9 +339,8 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
         <h2 id="h-caps"><span class="num">4</span>Captions<span class="hint">Tap to tick. Each video gets every ticked caption.</span></h2>
         <div class="captools">
           <label class="lbl" for="pickn">Pick</label>
-          <input type="number" id="pickn" class="pickn" min="2" max="24" step="2" value="6">
+          <input type="number" id="pickn" class="pickn" min="1" max="6" step="1" value="6">
           <button class="btn primary" id="pick">Half proven, half new</button>
-          <button class="btn" id="all">All</button>
           <button class="btn" id="none">None</button>
           <span class="grow"></span>
           <div class="seg" id="filter">
@@ -676,7 +780,7 @@ function capsFor(m) {
       ...b.fresh.map(raw => ({ id: 'c' + uid++, kind: 'new', raw, src: 'New idea', edited: null, on: false })),
       ...(S.own[m] || []).map(raw => ({ id: 'c' + uid++, kind: 'own', raw, src: 'Added by you', edited: null, on: true })),
     ];
-    pickMix(S.caps[m], +$('pickn').value || 6);
+    pickMix(S.caps[m], +$('pickn').value || MAX_PER_VIDEO);
   }
   return S.caps[m];
 }
@@ -690,12 +794,20 @@ const textOf = (c) => c.edited ?? fillText(c.raw, S.mission);
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function pickMix(list, n) {
   list.forEach(c => { if (c.kind !== 'own') c.on = false; });
+  trimToMax(list);
+  n = Math.min(n, maxCaps() - list.filter(c => c.on).length);
+  if (n <= 0) return;
   const half = Math.max(1, Math.floor(n / 2));
   shuffle(list.filter(c => c.kind === 'proven')).slice(0, half).forEach(c => c.on = true);
   shuffle(list.filter(c => c.kind === 'new')).slice(0, n - half).forEach(c => c.on = true);
 }
 const selected = () => capsFor(S.mission).filter(c => c.on && textOf(c).trim());
 const activeStyles = () => ['tiktok', 'snap'].filter(s => S.styles[s]);
+const MAX_PER_VIDEO = 6;
+const maxCaps = () => Math.floor(MAX_PER_VIDEO / Math.max(1, activeStyles().length));
+const tickedCount = () => capsFor(S.mission).filter(c => c.on).length;
+const capFull = () => `Up to ${MAX_PER_VIDEO} versions per video` + (activeStyles().length > 1 ? ' (3 captions × 2 styles)' : '') + '. Untick one first.';
+function trimToMax(list) { let on = list.filter(c => c.on); while (on.length > maxCaps()) on.pop().on = false; }
 
 function renderMissions() {
   $('missions').innerHTML = '';
@@ -726,7 +838,8 @@ function renderCaps() {
   const list = capsFor(S.mission), ol = $('caps');
   const sel = list.filter(c => c.on);
   const np = sel.filter(c => c.kind === 'proven').length, nn = sel.filter(c => c.kind === 'new').length, no = sel.filter(c => c.kind === 'own').length;
-  $('mix').textContent = `${sel.length} ticked · ${np} proven · ${nn} new` + (no ? ` · ${no} yours` : '');
+  $('mix').textContent = `${sel.length} of ${maxCaps()} ticked · ${np} proven · ${nn} new` + (no ? ` · ${no} yours` : '');
+  $('pickn').max = maxCaps(); if (+$('pickn').value > maxCaps()) $('pickn').value = maxCaps();
   ol.innerHTML = '';
   for (const c of list) {
     if (S.filter !== 'all' && c.kind !== S.filter) continue;
@@ -735,7 +848,10 @@ function renderCaps() {
     const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = c.on; cb.id = 'cb-' + c.id;
     cb.setAttribute('aria-label', 'Use this caption');
     cb.onclick = (e) => e.stopPropagation();
-    cb.onchange = () => { c.on = cb.checked; S.pvCap = c.id; renderCaps(); drawPreview(); };
+    cb.onchange = () => {
+      if (cb.checked && tickedCount() >= maxCaps()) { cb.checked = false; toast(capFull()); return; }
+      c.on = cb.checked; S.pvCap = c.id; renderCaps(); drawPreview();
+    };
     const txt = document.createElement('div'); txt.className = 'txt';
     const ta = document.createElement('textarea'); ta.rows = 1; ta.value = textOf(c); ta.id = 'ta-' + c.id; ta.readOnly = true;
     ta.setAttribute('aria-label', 'Caption text');
@@ -767,6 +883,7 @@ function renderCaps() {
     li.onpointerdown = () => { wasEditing = !ta.readOnly; };
     li.onclick = (e) => {
       if (wasEditing || !ta.readOnly || e.target.closest('button')) { wasEditing = false; return; }
+      if (!c.on && tickedCount() >= maxCaps()) { toast(capFull()); return; }
       c.on = !c.on; S.pvCap = c.id; renderCaps(); drawPreview();
     };
     ol.append(li);
@@ -946,6 +1063,7 @@ function setPos(p) {
 function jobs() {
   const vids = S.videos.filter(v => v.status === 'ok'), caps = selected(), styles = activeStyles();
   const out = [];
+  if (S.plan) { for (const v of vids) S.plan.forEach(({ c, st }, ci) => out.push({ v, c, ci, st, text: textOf(c), look: lookFor(v, c, st) })); return out; }
   for (const v of vids) caps.forEach((c, ci) => styles.forEach(st => out.push({ v, c, ci, st, text: textOf(c), look: lookFor(v, c, st) })));
   return out;
 }
@@ -960,6 +1078,7 @@ function updateMake() {
   else if (!vids) why = 'None of the videos can be read in this browser.';
   else if (!caps) why = 'Tick at least one caption.';
   else if (!st) why = 'Pick a caption style.';
+  else if (caps * st > MAX_PER_VIDEO) why = `Up to ${MAX_PER_VIDEO} versions per video. Untick some captions.`;
   else if (S.encoderError) why = S.encoderError;
   let warn = '';
   const perJob = n ? S.videos.filter(v => v.status === 'ok').reduce((a, v) => a + (v.bitrate + 2e5) * v.dur / 8, 0) * caps * st / n : 0;
@@ -1009,7 +1128,7 @@ async function make() {
     const name = `${base}_${mission}_${j.st === 'snap' ? 'snap' : 'tiktok'}_${String(j.ci + 1).padStart(2, '0')}.mp4`;
     $('status').textContent = `${done + 1}/${list.length} · ${name}`;
     try {
-      const prog = (p) => { $('bar').firstChild.style.width = ((done + p) / list.length * 100).toFixed(1) + '%'; };
+      const prog = (p) => { $('bar').firstChild.style.width = ((done + p) / list.length * 100).toFixed(1) + '%'; S.onProgress?.(done + p, list.length); };
       let out;
       try { out = await renderOne(j.v, j.text, j.st, pos, prog, j.look); }
       catch (e) {
@@ -1284,6 +1403,9 @@ const drop = $('drop');
 ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, () => drop.classList.remove('over')));
 drop.addEventListener('drop', (e) => { e.preventDefault(); addFiles([...e.dataTransfer.files]); });
 for (const b of $('styles').children) b.onclick = () => {
+  if (!S.styles[b.dataset.style] && tickedCount() * (activeStyles().length + 1) > MAX_PER_VIDEO) {
+    toast(`Up to ${MAX_PER_VIDEO} versions per video, so both styles allow 3 captions. Untick ${tickedCount() - 3} first.`, 4000); return;
+  }
   S.styles[b.dataset.style] = !S.styles[b.dataset.style]; store.set('styles', S.styles);
   if (S.styles[b.dataset.style]) S.pvStyle = b.dataset.style;
   renderStyles(); drawPreview(); updateMake();
@@ -1296,14 +1418,14 @@ for (const b of $('vary').children) b.onclick = () => {
 for (const b of $('posseg').children) b.onclick = () => setPos(+b.dataset.pos);
 $('pos').oninput = (e) => setPos(e.target.value / 100);
 for (const b of $('filter').children) b.onclick = () => { S.filter = b.dataset.f; for (const x of $('filter').children) x.setAttribute('aria-pressed', String(x === b)); renderCaps(); };
-$('pick').onclick = () => { pickMix(capsFor(S.mission), Math.max(2, +$('pickn').value || 6)); S.pvCap = null; renderCaps(); drawPreview(); };
-$('all').onclick = () => { capsFor(S.mission).forEach(c => c.on = true); renderCaps(); drawPreview(); };
+$('pick').onclick = () => { pickMix(capsFor(S.mission), Math.max(1, +$('pickn').value || maxCaps())); S.pvCap = null; renderCaps(); drawPreview(); };
 $('none').onclick = () => { capsFor(S.mission).forEach(c => c.on = false); renderCaps(); drawPreview(); };
 $('addform').onsubmit = (e) => {
   e.preventDefault();
   const t = $('addtext').value.trim(); if (!t) return;
   (S.own[S.mission] ||= []).push(t); store.set('own', S.own);
-  const c = { id: 'c' + uid++, kind: 'own', raw: t, src: 'Added by you', edited: null, on: true };
+  const c = { id: 'c' + uid++, kind: 'own', raw: t, src: 'Added by you', edited: null, on: tickedCount() < maxCaps() };
+  if (!c.on) toast('Added, but not ticked: ' + capFull());
   capsFor(S.mission).push(c); S.pvCap = c.id; $('addtext').value = '';
   renderCaps(); drawPreview();
 };
@@ -1364,6 +1486,137 @@ pv.addEventListener('pointerup', () => { dragging = false; });
 
 renderAll();
 drawPreview();
-window.__captioner = { S, addFiles, make, jobs, drawCaption, STY, BANK, zipAll, buildZip, profile: () => avcProfile, DISK, diskReady, restoring, nextShareBatch, lookFor };
+const WIZ = !/advanced/.test(location.search + location.hash);
+const MISSION_EMOJI = { pushups: '💪', skincare: '🧴', object: '🔎', dance: '💃' };
+const PARAM_Q = { pushups: 'How many push-ups did it take?', object: 'Which object did you find?', dance: 'How many seconds of dancing?' };
+function wizGo(s) {
+  for (const el of $('wiz').children) el.hidden = el.dataset.s !== s;
+  window.scrollTo(0, 0);
+  if (s === 'param') setTimeout(() => $('wparam').focus(), 50);
+}
+function wizMissions() {
+  $('wmissions').innerHTML = '';
+  for (const [key, m] of Object.entries(MISSIONS)) {
+    const b = document.createElement('button'); b.className = 'opt';
+    b.innerHTML = `<span class="em">${MISSION_EMOJI[key]}</span><b></b>`; b.querySelector('b').textContent = m.label;
+    b.onclick = () => {
+      S.mission = key; store.set('mission', key); S.pvCap = null;
+      if (!m.param) return wizKind();
+      const inp = $('wparam'); inp.type = m.param.type; inp.value = '';
+      inp.inputMode = m.param.type === 'number' ? 'numeric' : 'text';
+      inp.placeholder = m.param.type === 'number' ? '?' : 'e.g. ' + m.param.def;
+      $('wparamq').textContent = PARAM_Q[key];
+      wizGo('param');
+    };
+    $('wmissions').append(b);
+  }
+}
+const WZ = { kinds: { proven: true, new: true }, styles: { tiktok: true, snap: true }, n: 6 };
+const PER_CLIP = 6;   // the most per clip; the wheel starts here and only goes down
+const halves = (n) => { const a = Math.floor(n / 2), b = n - a; return Math.random() < 0.5 ? [a, b] : [b, a]; };
+const ROW = 48;
+function wheelBuild() {
+  const w = $('wwheel'); w.innerHTML = '<div class="pad"></div>';
+  for (let v = PER_CLIP; v >= 1; v--) { const d = document.createElement('div'); d.textContent = v; d.dataset.v = v; d.onclick = () => wheelSet(v, true); w.append(d); }
+  w.insertAdjacentHTML('beforeend', '<div class="pad"></div>');
+  let t = 0;
+  w.onscroll = () => { wheelRead(); clearTimeout(t); t = setTimeout(wheelRead, 90); };
+  w.onkeydown = (e) => {
+    const d = { ArrowDown: -1, ArrowUp: 1 }[e.key]; if (!d) return;
+    e.preventDefault(); wheelSet(Math.min(PER_CLIP, Math.max(1, WZ.n + d)), true);
+  };
+}
+function wheelRead() {
+  const w = $('wwheel'), v = Math.min(PER_CLIP, Math.max(1, PER_CLIP - Math.round(w.scrollTop / ROW)));
+  for (const d of w.children) d.classList.toggle('on', +d.dataset.v === v);
+  if (v !== WZ.n) { WZ.n = v; w.setAttribute('aria-valuenow', v); wizSummary(); }
+}
+function wheelSet(v, smooth) {
+  $('wwheel').scrollTo({ top: (PER_CLIP - v) * ROW, behavior: smooth ? 'smooth' : 'auto' });
+  WZ.n = v; $('wwheel').setAttribute('aria-valuenow', v); wizSummary();
+  for (const d of $('wwheel').children) d.classList.toggle('on', +d.dataset.v === v);
+}
+function wizSummary() {
+  const n = S.videos.length, k = Object.keys(WZ.kinds).filter(x => WZ.kinds[x]), st = Object.keys(WZ.styles).filter(x => WZ.styles[x]);
+  for (const b of $('wiz').querySelectorAll('[data-kind]')) b.setAttribute('aria-pressed', String(!!WZ.kinds[b.dataset.kind]));
+  for (const b of $('wiz').querySelectorAll('[data-wstyle]')) b.setAttribute('aria-pressed', String(!!WZ.styles[b.dataset.wstyle]));
+  const per = WZ.n, total = n * per;
+  $('wwheellbl').innerHTML = (per === 1 ? 'video' : 'videos') + (n > 1 ? '<br>per clip' : '');
+  $('wmake').disabled = !k.length || !st.length;
+  $('wmake').textContent = `Make ${total} video${total === 1 ? '' : 's'}`;
+  if (!k.length) return void ($('wkindsub').textContent = 'Tick Proven, New or both.');
+  if (!st.length) return void ($('wkindsub').textContent = 'Tick TikTok text, Snapchat bar or both.');
+  const h = per / 2, odd = per % 2 === 1;
+  const kTxt = k.length === 1 ? `${per} ${k[0]} caption${per === 1 ? '' : 's'}`
+    : per === 1 ? '1 caption, proven or new' : odd ? `${per} captions, a mix of proven and new` : `${h} proven + ${h} new captions`;
+  const sTxt = st.length === 1 ? (per === 1 ? '' : 'all ') + (st[0] === 'snap' ? 'as a Snapchat bar' : 'as TikTok text')
+    : per === 1 ? 'as TikTok text or a Snapchat bar' : odd ? 'mixing TikTok text and Snapchat bars' : `${h} as TikTok text, ${h} as a Snapchat bar`;
+  $('wkindsub').textContent = `${n > 1 ? 'Each clip gets ' : ''}${kTxt}, picked for you, ${sTxt}.`;
+}
+function wizKind() {
+  $('wkindback').dataset.back = MISSIONS[S.mission].param ? 'param' : 'mission';
+  wizGo('kind');
+  wheelSet(PER_CLIP);   // always starts on 6 (needs the screen visible to scroll)
+}
+function wizPlan() {
+  const list = capsFor(S.mission), kinds = ['proven', 'new'].filter(k => WZ.kinds[k]);
+  const counts = kinds.length === 2 ? halves(WZ.n) : [WZ.n], caps = [];
+  kinds.forEach((k, i) => caps.push(...shuffle(list.filter(c => c.kind === k)).slice(0, counts[i])));
+  const styles = shuffle(['tiktok', 'snap'].filter(x => WZ.styles[x]));
+  return caps.map((c, i) => ({ c, st: styles[i % styles.length] }));
+}
+function wizError(msg) { S.videos = []; $('waddsub').textContent = msg; $('waddsub').classList.add('err'); wizGo('add'); }
+async function wizMake() {
+  S.plan = wizPlan();
+  $('wmakeq').textContent = 'Reading your video…'; $('wbar').style.width = '0';
+  wizGo('making');
+  while (S.videos.some(v => v.status === 'reading')) await new Promise(r => setTimeout(r, 150));
+  const ok = S.videos.filter(v => v.status === 'ok');
+  if (!ok.length) return wizError(S.videos.find(v => v.err)?.err || 'That file couldn’t be read. Try another video.');
+  const total = jobs().length;
+  $('wmakeq').textContent = `Making ${total} videos…`;
+  S.onProgress = (x, n) => { $('wbar').style.width = (x / n * 100).toFixed(1) + '%'; $('wmakeq').textContent = `Making video ${Math.min(n, Math.floor(x) + 1)} of ${n}…`; };
+  const before = S.results.length;
+  try { await make(); } finally { S.onProgress = null; S.plan = null; }
+  if (S.encoderError) return wizError(S.encoderError);
+  S.videos = [];
+  if (S.results.length === before) return wizGo('add');
+  wizGo('done');
+}
+if (WIZ) {
+  document.body.classList.add('wizmode');
+  $('wiz').hidden = false;
+  $('wresults').append($('results'));
+  wizMissions();
+  wheelBuild();
+  $('wfile').onchange = (e) => {
+    const files = [...e.target.files]; e.target.value = '';
+    S.videos = []; $('waddsub').classList.remove('err');
+    addFiles(files);
+    if (!S.videos.length) { $('waddsub').textContent = 'That isn’t a video file. Pick an MP4 or MOV from your camera roll.'; $('waddsub').classList.add('err'); return; }
+    $('waddsub').textContent = 'The raw clip, no captions on it yet. Several at once is fine.';
+    wizGo('mission');
+  };
+  $('wparamf').onsubmit = (e) => {
+    e.preventDefault();
+    const m = MISSIONS[S.mission], v = $('wparam').value.trim(); if (!v) return;
+    S.params[S.mission][m.param.key] = v; store.set('params', S.params);
+    wizKind();
+  };
+  for (const b of $('wiz').querySelectorAll('[data-kind]')) b.onclick = () => { WZ.kinds[b.dataset.kind] = !WZ.kinds[b.dataset.kind]; wizSummary(); };
+  for (const b of $('wiz').querySelectorAll('[data-wstyle]')) b.onclick = () => { WZ.styles[b.dataset.wstyle] = !WZ.styles[b.dataset.wstyle]; wizSummary(); };
+  $('wmake').onclick = () => wizMake();
+  for (const b of $('wiz').querySelectorAll('.back[data-back]')) b.onclick = () => wizGo(b.dataset.back);
+  $('wkindback').onclick = () => wizGo($('wkindback').dataset.back);
+  $('wstop').onclick = () => { if (S.running) make(); };
+  $('wagain').onclick = async () => {
+    if (S.results.length && S.results.every(r => r.err || r.saved)) {
+      S.results = []; $('grid').innerHTML = ''; if (DISK.ok) await diskWipe(); updateSaveAll();
+    }
+    wizGo('add');
+  };
+  restoring.then(() => { if (S.results.length) wizGo('done'); });
+}
+window.__captioner = { S, wizGo, addFiles, make, jobs, drawCaption, STY, BANK, zipAll, buildZip, profile: () => avcProfile, DISK, diskReady, restoring, nextShareBatch, lookFor };
 </script>
 </body></html>
